@@ -4,34 +4,45 @@
   </div>
   <div class="row mt-3">
     <div class="col-12">
-      <form (ngSubmit)="insertData()">
-        <mat-card class="mb-5 toCenter" style="width: 40%">
-          <mat-form-field appearance="fill" style="width: 100%">
-            <mat-label>ID Negara</mat-label>
-            <input
-              matInput
-              [formControl]="isiIdNegara"
-              [(ngModel)]="element.daerah"
-              required
-            />
-            <mat-error *ngIf="isiIdNegara.invalid">{{ IdNegara() }} </mat-error>
-          </mat-form-field>
-          <mat-form-field appearance="fill" style="width: 50%">
-            <mat-label>Nama Negara</mat-label>
-            <input
-              matInput
-              [formControl]="isiNamaNegara"
-              [(ngModel)]="element.namamakanan"
-              required
-            />
-            <mat-error *ngIf="isiNamaNegara.invalid"
+      <!-- <form (ngSubmit)="insertData()"> -->
+      <mat-card class="mb-5 toCenter" style="width: 40%">
+        <mat-form-field appearance="fill" style="width: 100%">
+          <mat-label>ID Negara</mat-label>
+          <input
+            matInput
+            [(ngModel)]="idNegara"
+            appAlfabetOnly
+            oninput="this.value = this.value.toUpperCase()"
+            required
+            appearance="outline"
+            maxlength="2"
+          />
+          <!-- <mat-error *ngIf="isiIdNegara.invalid">{{ IdNegara() }} </mat-error> -->
+        </mat-form-field>
+        <mat-form-field appearance="fill" style="width: 50%">
+          <mat-label>Nama Negara</mat-label>
+          <input
+            matInput
+            [(ngModel)]="namaNegara"
+            appAlfabetOnly
+            required
+            appearance="outline"
+          />
+          <!-- <mat-error *ngIf="isiNamaNegara.invalid"
               >{{ NamaNegara() }}
-            </mat-error>
-          </mat-form-field>
-          <button mat-raised-button color="primary" class="mx-3">Save</button>
-          <button mat-raised-button routerLink="/wilayah-negara">Cancel</button>
-        </mat-card>
-      </form>
+            </mat-error> -->
+        </mat-form-field>
+        <button
+          mat-raised-button
+          color="primary"
+          class="mx-3"
+          (click)="createNegara()"
+        >
+          Save
+        </button>
+        <button mat-raised-button routerLink="/wilayah-negara">Cancel</button>
+      </mat-card>
+      <!-- </form> -->
     </div>
   </div>
 </div>

@@ -36,6 +36,7 @@ import { CreateKabupatenComponent } from './component/wilayah-kabupaten/create-k
 import { CreateProvinsiComponent } from './component/wilayah-provinsi/create-provinsi/create-provinsi.component';
 import { EditProvinsiComponent } from './component/wilayah-provinsi/edit-provinsi/edit-provinsi.component';
 import { DeleteProvinsiComponent } from './component/wilayah-provinsi/delete-provinsi/delete-provinsi.component';
+import { AlfabetOnlyDirective } from './directives/alfabet-only.directive';
 
 @NgModule({
   declarations: [
@@ -60,6 +61,7 @@ import { DeleteProvinsiComponent } from './component/wilayah-provinsi/delete-pro
     CreateProvinsiComponent,
     EditProvinsiComponent,
     DeleteProvinsiComponent,
+    AlfabetOnlyDirective,
   ],
   imports: [
     BrowserModule,

@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  mufUrl: 'http://mff-gateway-dev.apps.ocp4dev.muf.co.id/mdm/wilayah/country/',
+  wilayah: 'http://mff-gateway-dev.apps.ocp4dev.muf.co.id/mdm/wilayah/',
 };
 
 /*

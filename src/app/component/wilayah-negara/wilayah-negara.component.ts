@@ -3,9 +3,10 @@ import { WilayahService } from '../wilayah.service';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
-import { NegaraModel } from 'src/app/model/negaraModel';
 import { MatDialog } from '@angular/material/dialog';
+import { Negara } from 'src/app/model/negaraModel';
 import { DialogDeleteComponent } from './dialog-delete/dialog-delete.component';
+import { PageEvent } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-wilayah-negara',
@@ -13,7 +14,6 @@ import { DialogDeleteComponent } from './dialog-delete/dialog-delete.component';
   styleUrls: ['./wilayah-negara.component.css'],
 })
 export class WilayahNegaraComponent implements OnInit {
-  i = 0;
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
@@ -22,45 +22,88 @@ export class WilayahNegaraComponent implements OnInit {
   dataFoods: any;
   dataCountry: any;
   titlePage = 'Negara';
-  displayedColumns: string[] = ['countryId'];
-  dataSource = new MatTableDataSource<Country>([]);
-  dataSources = new MatTableDataSource<Food>([]);
+  displayedColumns: string[] = ['id', 'countryId', 'countryNameIdn', 'action'];
+  dataSource!: MatTableDataSource<Negara>;
+  dataNegara: Negara[] = [];
+
   constructor(
     private wilayahService: WilayahService,
     private dialog: MatDialog
-  ) {}
+  ) {
+    this.dataSource = new MatTableDataSource(this.dataNegara);
+  }
 
   ngOnInit(): void {
-    this.getDataFoods();
     this.getDataCountry();
   }
 
-  @ViewChild(MatPaginator)
+  @ViewChild('paginator')
   paginator!: MatPaginator;
 
-  @ViewChild(MatSort) sort!: MatSort;
+  @ViewChild('sort') sort!: MatSort;
 
-  // ngAfterViewInit() {
-  //   this.dataSource.sort = this.sort;
-  // }
+  ngAfterViewInit() {
+    this.dataSource.sort = this.sort;
+    this.dataSource.paginator = this.paginator;
+  }
+  pagesSize: any;
+  pagesIndex: any;
+  totalRec: any;
+
+  pageSize = 243;
+  pageIndex = 0;
+
+  pageSizeOptions = [5, 10, 25];
 
   getDataCountry() {
-    this.wilayahService.getDataCountry().subscribe((res) => {
-      this.dataCountry = res;
-      this.dataSource = new MatTableDataSource<Country>(this.dataCountry);
+    this.dataNegara = [];
+    this.dataSource = new MatTableDataSource(this.dataNegara);
+    this.wilayahService
+      .getAll('/country/?page=' + this.pageIndex + '&size=' + this.totalRec)
+      .subscribe((res) => {
+        console.log(res);
+        this.totalRec = res.body.paging.totalrecord;
+        console.log(this.totalRec);
+        res.body.result.forEach((element: any) => {
+          this.dataNegara.push({
+            no: '',
+            countryId: element.countryId,
+            countryNameIdn: element.countryNameIdn,
+          });
+        });
+        this.dataSource = new MatTableDataSource(this.dataNegara);
+        this.ngAfterViewInit();
+      });
+  }
+  pageEvent!: PageEvent;
+  handlePageEvent(e: PageEvent) {
+    this.pageEvent = e;
+    this.pageSize = e.pageSize;
+    this.pageIndex = e.pageIndex;
+    console.log(this.pageEvent);
+    console.log(this.pageSize);
+    console.log(this.pageIndex);
 
-      console.log(this.dataSource);
-    });
+    this.dataNegara = [];
+    this.dataSource = new MatTableDataSource(this.dataNegara);
+    this.wilayahService
+      .getAll('/country/?page=' + this.pageIndex + '&size=' + this.pageSize)
+      .subscribe((res) => {
+        console.log(res);
+        this.totalRec = res.body.paging.totalrecord;
+        console.log(this.totalRec);
+        res.body.result.forEach((element: any) => {
+          this.dataNegara.push({
+            no: '',
+            countryId: element.countryId,
+            countryNameIdn: element.countryNameIdn,
+          });
+        });
+        this.dataSource = new MatTableDataSource(this.dataNegara);
+        this.ngAfterViewInit();
+      });
   }
 
-  getDataFoods() {
-    this.wilayahService.getDataFoods().subscribe((res) => {
-      this.dataFoods = res;
-      this.dataSources = new MatTableDataSource<Food>(this.dataFoods);
-      this.dataSources.paginator = this.paginator;
-      console.log(this.dataSources);
-    });
-  }
   openDeleteDialog(): void {
     const dialogRef = this.dialog.open(DialogDeleteComponent);
 
@@ -70,21 +113,4 @@ export class WilayahNegaraComponent implements OnInit {
       }
     });
   }
-}
-
-export interface Food {
-  id: any;
-  namamakanan: any;
-  daerah: any;
-  jumlah: any;
-}
-
-export interface Country {
-  countryId: String;
-  countryNameIdn: any;
-  createdBy: any;
-  createdDate: any;
-  deleted: any;
-  updatedBy: any;
-  updatedDate: any;
 }

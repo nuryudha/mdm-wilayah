@@ -1,6 +1,5 @@
-export class NegaraModel {
-  id: any;
-  namamakanan: any;
-  daerah: any;
-  jumlah: any;
+export interface Negara {
+  no: any;
+  countryId: any;
+  countryNameIdn: any;
 }

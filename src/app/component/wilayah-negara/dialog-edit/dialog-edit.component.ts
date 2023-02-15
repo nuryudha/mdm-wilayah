@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { WilayahService } from '../../wilayah.service';
-import { NegaraModel } from 'src/app/model/negaraModel';
+import { Negara } from 'src/app/model/negaraModel';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormControl, Validators } from '@angular/forms';
 
@@ -39,18 +39,12 @@ export class DialogEditComponent implements OnInit {
   ) {}
   id: any;
   dataView: any;
-  element = new NegaraModel();
+  // element = new NegaraModel();
 
   ngOnInit(): void {
     this.id = this.route.snapshot.params['id'];
     this.getViewId();
   }
 
-  getViewId() {
-    this.foodEditService.getViewId(this.id).subscribe((res) => {
-      this.dataView = res;
-      this.element = this.dataView;
-      console.log(res);
-    });
-  }
+  getViewId() {}
 }

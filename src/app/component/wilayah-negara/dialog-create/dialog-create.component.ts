@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
-import { NegaraModel } from 'src/app/model/negaraModel';
+
 import { WilayahService } from '../../wilayah.service';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
@@ -11,46 +11,46 @@ import Swal from 'sweetalert2';
   styleUrls: ['./dialog-create.component.css'],
 })
 export class DialogCreateComponent implements OnInit {
-  element = new NegaraModel();
-  isiIdNegara = new FormControl('', [
-    Validators.required,
-    Validators.maxLength(2),
-  ]);
-  isiNamaNegara = new FormControl('', [Validators.required]);
-  IdNegara() {
-    if (this.isiIdNegara.hasError('required')) {
-      return 'Tidak Boleh Kosong';
-    }
-    if (this.isiIdNegara.value.length > 2) {
-      return 'Panjang ID Negara tidak boleh lebih dari 2 karakter';
-    }
-
-    return '';
-  }
-  NamaNegara() {
-    if (this.isiNamaNegara.hasError('required')) {
-      return 'Tidak Boleh Kosong';
-    }
-
-    return '';
-  }
-
-  insertData() {
-    this.wilayahService.insertData(this.element).subscribe((res) => {
-      Swal.fire({
-        position: 'top',
-        icon: 'success',
-        title: 'Data Berhasil Diinput',
-        showConfirmButton: false,
-        timer: 1000,
-      }).then((result) => {
-        /* Read more about handling dismissals below */
-        if (result.dismiss === Swal.DismissReason.timer) {
-          this.router.navigate(['../wilayah-negara']);
-        }
-      });
+  idNegara: any;
+  namaNegara: any;
+  createNegara() {
+    let parameter = {
+      countryId: this.idNegara,
+      countryNameIdn: this.namaNegara,
+    };
+    console.log(parameter);
+    this.wilayahService.postAll('country', parameter).subscribe((res) => {
+      let statusCode = res.body.status.responseCode;
+      let statusDesc = res.body.status.responseDesc;
+      console.log(res);
+      if (statusCode == '200') {
+        Swal.fire({
+          position: 'center',
+          icon: 'success',
+          title: 'Berhasil',
+          showConfirmButton: false,
+          timer: 1500,
+        });
+      } else if (statusDesc.toLowerCase().includes('already exist')) {
+        Swal.fire({
+          position: 'center',
+          icon: 'info',
+          title: 'Data Sudah Ada',
+          showConfirmButton: false,
+          timer: 1500,
+        });
+      } else {
+        Swal.fire({
+          position: 'center',
+          icon: 'error',
+          title: 'Buat Negara Gagal',
+          showConfirmButton: false,
+          timer: 1500,
+        });
+      }
     });
   }
+
   constructor(private wilayahService: WilayahService, private router: Router) {}
 
   ngOnInit(): void {}

@@ -7,22 +7,22 @@
       <mat-card class="mb-5 toCenter" style="width: 40%">
         <mat-form-field appearance="fill" style="width: 100%">
           <mat-label>ID Negara</mat-label>
-          <input
+          <!-- <input
             matInput
             [formControl]="isiIdNegara"
             required
             [(ngModel)]="element.daerah"
-          />
+          /> -->
           <mat-error *ngIf="isiIdNegara.invalid">{{ IdNegara() }} </mat-error>
         </mat-form-field>
         <mat-form-field appearance="fill" style="width: 50%">
           <mat-label>Nama Negara</mat-label>
-          <input
+          <!-- <input
             matInput
             [formControl]="isiNamaNegara"
             required
             [(ngModel)]="element.namamakanan"
-          />
+          /> -->
           <mat-error *ngIf="isiNamaNegara.invalid"
             >{{ NamaNegara() }}
           </mat-error>

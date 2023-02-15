@@ -1,13 +1,30 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { NegaraModel } from '../model/negaraModel';
+import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
+import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
+const httpOptions: Object = {
+  headers: new HttpHeaders({
+    'Content-Type': 'application/json',
+  }),
+  observe: 'response',
+  responseType: 'json',
+};
 @Injectable({
   providedIn: 'root',
 })
 export class WilayahService {
-  constructor(private httpClient: HttpClient) {}
+  constructor(private http: HttpClient) {}
 
-  getCountry() {}
+  getAll(endpoint: string): Observable<HttpResponse<any>> {
+    return this.http
+      .get<any>(environment.wilayah + endpoint, httpOptions)
+      .pipe();
+  }
+
+  postAll(endpoint: string, parameter: any): Observable<HttpResponse<any>> {
+    return this.http
+      .post<any>(environment.wilayah + endpoint, parameter, httpOptions)
+      .pipe();
+  }
 }
