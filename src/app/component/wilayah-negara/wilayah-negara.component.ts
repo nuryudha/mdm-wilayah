@@ -20,9 +20,11 @@ export class WilayahNegaraComponent implements OnInit {
   }
 
   dataFoods: any;
+  dataCountry: any;
   titlePage = 'Negara';
-  displayedColumns: string[] = ['id', 'daerah', 'namamakanan', 'action'];
-  dataSource = new MatTableDataSource<Food>([]);
+  displayedColumns: string[] = ['countryId'];
+  dataSource = new MatTableDataSource<Country>([]);
+  dataSources = new MatTableDataSource<Food>([]);
   constructor(
     private wilayahService: WilayahService,
     private dialog: MatDialog
@@ -30,6 +32,7 @@ export class WilayahNegaraComponent implements OnInit {
 
   ngOnInit(): void {
     this.getDataFoods();
+    this.getDataCountry();
   }
 
   @ViewChild(MatPaginator)
@@ -37,16 +40,25 @@ export class WilayahNegaraComponent implements OnInit {
 
   @ViewChild(MatSort) sort!: MatSort;
 
-  ngAfterViewInit() {
-    this.dataSource.sort = this.sort;
+  // ngAfterViewInit() {
+  //   this.dataSource.sort = this.sort;
+  // }
+
+  getDataCountry() {
+    this.wilayahService.getDataCountry().subscribe((res) => {
+      this.dataCountry = res;
+      this.dataSource = new MatTableDataSource<Country>(this.dataCountry);
+
+      console.log(this.dataSource);
+    });
   }
 
   getDataFoods() {
     this.wilayahService.getDataFoods().subscribe((res) => {
       this.dataFoods = res;
-      this.dataSource = new MatTableDataSource<Food>(this.dataFoods);
-      this.dataSource.paginator = this.paginator;
-      console.log(res);
+      this.dataSources = new MatTableDataSource<Food>(this.dataFoods);
+      this.dataSources.paginator = this.paginator;
+      console.log(this.dataSources);
     });
   }
   openDeleteDialog(): void {
@@ -61,8 +73,18 @@ export class WilayahNegaraComponent implements OnInit {
 }
 
 export interface Food {
-  id: number;
-  namamakanan: string;
-  daerah: string;
-  jumlah: number;
+  id: any;
+  namamakanan: any;
+  daerah: any;
+  jumlah: any;
+}
+
+export interface Country {
+  countryId: String;
+  countryNameIdn: any;
+  createdBy: any;
+  createdDate: any;
+  deleted: any;
+  updatedBy: any;
+  updatedDate: any;
 }
