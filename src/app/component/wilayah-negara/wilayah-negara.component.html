@@ -19,8 +19,16 @@
               <mat-icon>search</mat-icon>
               Search
             </mat-label>
-            <input matInput type="text" (keyup)="applyFilter($event)" />
+            <input
+              matInput
+              type="text"
+              [(ngModel)]="searchData"
+              appAlfabetOnly
+            />
           </mat-form-field>
+          <button mat-raised-button class="mb-3" (click)="searchNegara()">
+            <mat-icon>search</mat-icon>
+          </button>
           <button
             mat-raised-button
             class="mb-3"
@@ -129,7 +137,6 @@
                 [pageIndex]="pageIndex"
                 [pageSizeOptions]="pageSizeOptions"
                 aria-label="Select page"
-                (click)="getData()"
               >
               </mat-paginator>
             </div>

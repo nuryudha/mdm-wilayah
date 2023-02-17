@@ -16,11 +16,6 @@ import Swal from 'sweetalert2';
   styleUrls: ['./wilayah-negara.component.css'],
 })
 export class WilayahNegaraComponent implements OnInit, AfterViewInit {
-  applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
-  }
-
   dataFoods: any;
   dataCountry: any;
   titlePage = 'Negara';
@@ -47,29 +42,15 @@ export class WilayahNegaraComponent implements OnInit, AfterViewInit {
   @ViewChild('sort') sort!: MatSort;
 
   totalRec: any;
-
   pageSize = 10;
-  pageIndex = 1;
-
+  pageIndex = 0;
   pageSizeOptions = [10, 20, 100];
-
-  getDataCountryAll() {
-    this.wilayahService
-      .getAll(
-        'country/?sort=countryNameIdn,asc&page=' +
-          this.pageIndex +
-          '&size=' +
-          this.pageSize
-      )
-      .subscribe((res) => {
-        this.totalRec = res.body.paging.totalrecord;
-        this.getCountry();
-      });
-  }
-
   getCountry() {
+    let index = 0;
+    console.log(this.pageIndex);
     this.dataNegara = [];
     this.dataSource = new MatTableDataSource(this.dataNegara);
+
     this.wilayahService
       .getAll(
         'country/?sort=countryNameIdn,asc&page=' +
@@ -94,70 +75,100 @@ export class WilayahNegaraComponent implements OnInit, AfterViewInit {
   }
   ngAfterViewInit() {
     this.dataSource.sort = this.sort;
-    this.dataSource.paginator = this.paginator;
+    // this.dataSource.paginator = this.paginator;
   }
   pageEvent!: PageEvent;
   handlePageEvent(e: PageEvent) {
     this.pageEvent = e;
     this.pageSize = e.pageSize;
     this.pageIndex = e.pageIndex;
-    this.ngAfterViewInit();
 
     console.log(this.pageEvent);
     console.log(this.pageSize);
     console.log(this.pageIndex);
 
-    // this.dataNegara = [];
-
-    // this.dataSource = new MatTableDataSource(this.dataNegara);
-    // this.wilayahService
-    //   .getAll(
-    //     'country/?sort=countryNameIdn,asc&page=' +
-    //       (this.pageIndex + 1) +
-    //       '&size=' +
-    //       this.pageSize
-    //   )
-    //   .subscribe((res) => {
-    //     this.pageEvent = e;
-    //     this.pageSize = e.pageSize;
-    //     this.pageIndex = e.pageIndex;
-    //     console.log(res);
-    //     this.totalRec = res.body.paging.totalrecord;
-    //     console.log(this.totalRec);
-    //     res.body.result.forEach((element: any) => {
-    //       this.dataNegara.push({
-    //         no: '',
-    //         countryId: element.countryId,
-    //         countryNameIdn: element.countryNameIdn,
-    //       });
-    //     });
-    //     this.dataSource = new MatTableDataSource(this.dataNegara);
-    //     this.ngAfterViewInit();
-    //   });
-  }
-
-  getData() {
     this.dataNegara = [];
     this.dataSource = new MatTableDataSource(this.dataNegara);
+    if (this.searchData == null) {
+      this.wilayahService
+        .getAll(
+          'country/?sort=countryNameIdn,asc&page=' +
+            this.pageIndex +
+            '&size=' +
+            this.pageSize
+        )
+        .subscribe((res) => {
+          this.pageEvent = e;
+          this.pageSize = e.pageSize;
+          this.pageIndex = e.pageIndex;
+          console.log(res);
+          this.totalRec = res.body.paging.totalrecord;
+          console.log(this.totalRec);
+          res.body.result.forEach((element: any) => {
+            this.dataNegara.push({
+              no: '',
+              countryId: element.countryId,
+              countryNameIdn: element.countryNameIdn,
+            });
+          });
+          this.dataSource = new MatTableDataSource(this.dataNegara);
+          // this.ngAfterViewInit();
+        });
+    } else {
+      this.dataSearchNegara = [];
+      this.wilayahService
+        .getAll(
+          'country/?countryNameIdn.contains=' +
+            this.searchData +
+            '&countryId.contains=' +
+            this.searchData +
+            '&sort=countryNameIdn,asc&page=' +
+            this.pageIndex +
+            '&size=' +
+            this.pageSize
+        )
+        .subscribe((res) => {
+          console.log(res);
+          this.totalRec = res.body.paging.totalrecord;
+          res.body.result.forEach((element: any) => {
+            this.dataSearchNegara.push({
+              no: '',
+              countryId: element.countryId,
+              countryNameIdn: element.countryNameIdn,
+            });
+          });
+          this.dataSource = new MatTableDataSource(this.dataSearchNegara);
+          this.ngAfterViewInit();
+        });
+    }
+  }
+
+  searchData: any;
+  dataSearchNegara: Negara[] = [];
+  searchNegara() {
+    this.dataSearchNegara = [];
     this.wilayahService
       .getAll(
-        'country/?sort=countryNameIdn,asc&page=' +
-          (this.pageIndex + 1) +
+        'country/?countryNameIdn.contains=' +
+          this.searchData +
+          '&countryId.contains=' +
+          this.searchData +
+          '&sort=countryNameIdn,asc&page=' +
+          this.pageIndex +
           '&size=' +
           this.pageSize
       )
       .subscribe((res) => {
-        // console.log(res);
-        // this.totalRec = res.body.paging.totalrecord;
-        // console.log(this.totalRec);
+        console.log(res);
+        this.totalRec = res.body.paging.totalrecord;
         res.body.result.forEach((element: any) => {
-          this.dataNegara.push({
+          this.dataSearchNegara.push({
             no: '',
             countryId: element.countryId,
             countryNameIdn: element.countryNameIdn,
           });
         });
-        this.dataSource = new MatTableDataSource(this.dataNegara);
+        this.dataSource = new MatTableDataSource(this.dataSearchNegara);
         this.ngAfterViewInit();
       });
   }
