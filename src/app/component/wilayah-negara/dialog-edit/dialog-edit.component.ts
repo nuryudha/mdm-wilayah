@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { WilayahService } from '../../wilayah.service';
-import { Negara } from 'src/app/model/negaraModel';
+import { NegaraModel } from 'src/app/model/negaraModel';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormControl, Validators } from '@angular/forms';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-dialog-edit',
@@ -10,41 +11,59 @@ import { FormControl, Validators } from '@angular/forms';
   styleUrls: ['./dialog-edit.component.css'],
 })
 export class DialogEditComponent implements OnInit {
-  isiIdNegara = new FormControl('', [
-    Validators.required,
-    Validators.maxLength(2),
-  ]);
-  isiNamaNegara = new FormControl('', [Validators.required]);
-  IdNegara() {
-    if (this.isiIdNegara.hasError('required')) {
-      return 'Tidak Boleh Kosong';
-    }
-    if (this.isiIdNegara.value.length > 2) {
-      return 'Panjang ID Negara tidak boleh lebih dari 2 karakter';
-    }
+  id: any;
+  idCountry: any;
+  countryNameIdn: any;
 
-    return '';
-  }
-  NamaNegara() {
-    if (this.isiNamaNegara.hasError('required')) {
-      return 'Tidak Boleh Kosong';
-    }
-
-    return '';
-  }
   constructor(
     private route: ActivatedRoute,
-    // private router: Router,
-    private foodEditService: WilayahService
+    private router: Router,
+    private wilayahService: WilayahService
   ) {}
-  id: any;
-  dataView: any;
-  // element = new NegaraModel();
 
   ngOnInit(): void {
     this.id = this.route.snapshot.params['id'];
-    this.getViewId();
+    this.getId();
   }
 
-  getViewId() {}
+  getId() {
+    this.wilayahService.getId('country/' + this.id).subscribe((res) => {
+      console.log(res);
+      this.idCountry = res.body.result.countryId;
+      this.countryNameIdn = res.body.result.countryNameIdn;
+    });
+  }
+
+  saveEdit() {
+    let parameter = {
+      countryId: this.idCountry,
+      countryNameIdn: this.countryNameIdn,
+    };
+    console.log(parameter);
+    this.wilayahService.putId('country/', parameter).subscribe((res) => {
+      console.log(res);
+      let statusCode = res.body.status.responseCode;
+      if (statusCode == '200') {
+        Swal.fire({
+          position: 'center',
+          icon: 'success',
+          title: 'Berhasil',
+          showConfirmButton: false,
+          timer: 1500,
+        }).then((res) => {
+          if (res) {
+            this.router.navigate(['/wilayah-negara']);
+          }
+        });
+      } else {
+        Swal.fire({
+          position: 'center',
+          icon: 'error',
+          title: 'Gagal',
+          showConfirmButton: false,
+          timer: 1500,
+        });
+      }
+    });
+  }
 }

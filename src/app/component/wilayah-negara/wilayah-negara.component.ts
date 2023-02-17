@@ -1,19 +1,21 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { WilayahService } from '../wilayah.service';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { Negara } from 'src/app/model/negaraModel';
 import { DialogDeleteComponent } from './dialog-delete/dialog-delete.component';
 import { PageEvent } from '@angular/material/paginator';
+import { ActivatedRoute, Router } from '@angular/router';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-wilayah-negara',
   templateUrl: './wilayah-negara.component.html',
   styleUrls: ['./wilayah-negara.component.css'],
 })
-export class WilayahNegaraComponent implements OnInit {
+export class WilayahNegaraComponent implements OnInit, AfterViewInit {
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
@@ -28,13 +30,15 @@ export class WilayahNegaraComponent implements OnInit {
 
   constructor(
     private wilayahService: WilayahService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private route: ActivatedRoute
   ) {
     this.dataSource = new MatTableDataSource(this.dataNegara);
   }
 
   ngOnInit(): void {
-    this.getDataCountry();
+    this.getCountry();
+    // this.getDataCountryAll();
   }
 
   @ViewChild('paginator')
@@ -42,28 +46,41 @@ export class WilayahNegaraComponent implements OnInit {
 
   @ViewChild('sort') sort!: MatSort;
 
-  ngAfterViewInit() {
-    this.dataSource.sort = this.sort;
-    this.dataSource.paginator = this.paginator;
-  }
-  pagesSize: any;
-  pagesIndex: any;
   totalRec: any;
 
-  pageSize = 243;
-  pageIndex = 0;
+  pageSize = 10;
+  pageIndex = 1;
 
-  pageSizeOptions = [5, 10, 25];
+  pageSizeOptions = [10, 20, 100];
 
-  getDataCountry() {
+  getDataCountryAll() {
+    this.wilayahService
+      .getAll(
+        'country/?sort=countryNameIdn,asc&page=' +
+          this.pageIndex +
+          '&size=' +
+          this.pageSize
+      )
+      .subscribe((res) => {
+        this.totalRec = res.body.paging.totalrecord;
+        this.getCountry();
+      });
+  }
+
+  getCountry() {
     this.dataNegara = [];
     this.dataSource = new MatTableDataSource(this.dataNegara);
     this.wilayahService
-      .getAll('/country/?page=' + this.pageIndex + '&size=' + this.totalRec)
+      .getAll(
+        'country/?sort=countryNameIdn,asc&page=' +
+          this.pageIndex +
+          '&size=' +
+          this.pageSize
+      )
       .subscribe((res) => {
-        console.log(res);
+        // console.log(res);
         this.totalRec = res.body.paging.totalrecord;
-        console.log(this.totalRec);
+        // console.log(this.totalRec);
         res.body.result.forEach((element: any) => {
           this.dataNegara.push({
             no: '',
@@ -74,24 +91,65 @@ export class WilayahNegaraComponent implements OnInit {
         this.dataSource = new MatTableDataSource(this.dataNegara);
         this.ngAfterViewInit();
       });
+  }
+  ngAfterViewInit() {
+    this.dataSource.sort = this.sort;
+    this.dataSource.paginator = this.paginator;
   }
   pageEvent!: PageEvent;
   handlePageEvent(e: PageEvent) {
     this.pageEvent = e;
     this.pageSize = e.pageSize;
     this.pageIndex = e.pageIndex;
+    this.ngAfterViewInit();
+
     console.log(this.pageEvent);
     console.log(this.pageSize);
     console.log(this.pageIndex);
 
+    // this.dataNegara = [];
+
+    // this.dataSource = new MatTableDataSource(this.dataNegara);
+    // this.wilayahService
+    //   .getAll(
+    //     'country/?sort=countryNameIdn,asc&page=' +
+    //       (this.pageIndex + 1) +
+    //       '&size=' +
+    //       this.pageSize
+    //   )
+    //   .subscribe((res) => {
+    //     this.pageEvent = e;
+    //     this.pageSize = e.pageSize;
+    //     this.pageIndex = e.pageIndex;
+    //     console.log(res);
+    //     this.totalRec = res.body.paging.totalrecord;
+    //     console.log(this.totalRec);
+    //     res.body.result.forEach((element: any) => {
+    //       this.dataNegara.push({
+    //         no: '',
+    //         countryId: element.countryId,
+    //         countryNameIdn: element.countryNameIdn,
+    //       });
+    //     });
+    //     this.dataSource = new MatTableDataSource(this.dataNegara);
+    //     this.ngAfterViewInit();
+    //   });
+  }
+
+  getData() {
     this.dataNegara = [];
     this.dataSource = new MatTableDataSource(this.dataNegara);
     this.wilayahService
-      .getAll('/country/?page=' + this.pageIndex + '&size=' + this.pageSize)
+      .getAll(
+        'country/?sort=countryNameIdn,asc&page=' +
+          (this.pageIndex + 1) +
+          '&size=' +
+          this.pageSize
+      )
       .subscribe((res) => {
-        console.log(res);
-        this.totalRec = res.body.paging.totalrecord;
-        console.log(this.totalRec);
+        // console.log(res);
+        // this.totalRec = res.body.paging.totalrecord;
+        // console.log(this.totalRec);
         res.body.result.forEach((element: any) => {
           this.dataNegara.push({
             no: '',
@@ -104,13 +162,70 @@ export class WilayahNegaraComponent implements OnInit {
       });
   }
 
-  openDeleteDialog(): void {
-    const dialogRef = this.dialog.open(DialogDeleteComponent);
-
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result) {
-        // tambahkan logic untuk menghapus data
+  deleteNegara(dataCountry: any) {
+    let idCountry = dataCountry.countryId;
+    console.log(idCountry);
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.wilayahService
+          .deleteAll('country/' + idCountry)
+          .subscribe((res) => {
+            console.log(res);
+            let statusCode = res.body.status.responseCode;
+            if (statusCode == '200') {
+              Swal.fire({
+                position: 'center',
+                icon: 'success',
+                title: 'Berhasil',
+                showConfirmButton: false,
+                timer: 1500,
+              }).then((res) => {
+                if (res) this.getCountry();
+              });
+            } else {
+              Swal.fire({
+                position: 'center',
+                icon: 'error',
+                title: 'Gagal',
+                showConfirmButton: false,
+                timer: 1500,
+              });
+            }
+          });
       }
     });
+  }
+
+  openDeleteDialog(dataCountry: any): void {
+    let idCountry = dataCountry.countryId;
+    console.log(idCountry);
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.autoFocus = false;
+    dialogConfig.disableClose = true;
+    dialogConfig.width = '20%';
+    dialogConfig.height = '20%';
+    dialogConfig.data = {
+      idNegara: idCountry,
+    };
+    this.dialog
+      .open(DialogDeleteComponent, dialogConfig)
+      .afterClosed()
+      .subscribe((res) => {});
+
+    // const dialogRef = this.dialog.open(DialogDeleteComponent);
+
+    // dialogRef.afterClosed().subscribe((result) => {
+    //   if (result) {
+
+    //   }
+    // });
   }
 }

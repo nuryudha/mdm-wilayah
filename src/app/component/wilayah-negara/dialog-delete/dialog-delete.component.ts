@@ -1,5 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
+import { Component, Inject, OnInit } from '@angular/core';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { WilayahService } from '../../wilayah.service';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-dialog-delete',
@@ -7,16 +9,26 @@ import { MatDialogRef } from '@angular/material/dialog';
   styleUrls: ['./dialog-delete.component.css'],
 })
 export class DialogDeleteComponent implements OnInit {
-  constructor(public dialogRef: MatDialogRef<DialogDeleteComponent>) {}
+  constructor(
+    public wilayahService: WilayahService,
+    private route: ActivatedRoute,
+    public dialogRef: MatDialogRef<DialogDeleteComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: any
+  ) {}
+  ngOnInit(): void {
+    console.log(this.data.idNegara);
+  }
 
   delete() {
-    // tambahkan logic untuk menghapus data
+    this.wilayahService
+      .deleteAll('country/' + this.data.idNegara)
+      .subscribe((res) => {
+        console.log(res);
+      });
     this.dialogRef.close(true);
   }
 
   cancel() {
     this.dialogRef.close(false);
   }
-
-  ngOnInit(): void {}
 }

@@ -7,27 +7,20 @@
       <mat-card class="mb-5 toCenter" style="width: 40%">
         <mat-form-field appearance="fill" style="width: 100%">
           <mat-label>ID Negara</mat-label>
-          <!-- <input
-            matInput
-            [formControl]="isiIdNegara"
-            required
-            [(ngModel)]="element.daerah"
-          /> -->
-          <mat-error *ngIf="isiIdNegara.invalid">{{ IdNegara() }} </mat-error>
+          <input matInput required [(ngModel)]="this.idCountry" />
         </mat-form-field>
         <mat-form-field appearance="fill" style="width: 50%">
           <mat-label>Nama Negara</mat-label>
-          <!-- <input
-            matInput
-            [formControl]="isiNamaNegara"
-            required
-            [(ngModel)]="element.namamakanan"
-          /> -->
-          <mat-error *ngIf="isiNamaNegara.invalid"
-            >{{ NamaNegara() }}
-          </mat-error>
+          <input matInput required [(ngModel)]="this.countryNameIdn" />
         </mat-form-field>
-        <button mat-raised-button color="primary" class="mx-3">Save</button>
+        <button
+          mat-raised-button
+          color="primary"
+          class="mx-3"
+          (click)="saveEdit()"
+        >
+          Save
+        </button>
         <button mat-raised-button routerLink="/wilayah-negara">Cancel</button>
       </mat-card>
     </div>

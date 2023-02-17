@@ -27,4 +27,22 @@ export class WilayahService {
       .post<any>(environment.wilayah + endpoint, parameter, httpOptions)
       .pipe();
   }
+
+  deleteAll(endpoint: string): Observable<HttpResponse<any>> {
+    return this.http
+      .delete<any>(environment.wilayah + endpoint, httpOptions)
+      .pipe();
+  }
+
+  getId(endpoint: string): Observable<HttpResponse<any>> {
+    return this.http
+      .get<any>(environment.wilayah + endpoint, httpOptions)
+      .pipe();
+  }
+
+  putId(endpoint: string, parameter: any): Observable<HttpResponse<any>> {
+    return this.http
+      .put<any>(environment.wilayah + endpoint, parameter, httpOptions)
+      .pipe();
+  }
 }
