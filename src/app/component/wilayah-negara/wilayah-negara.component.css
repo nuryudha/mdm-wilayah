@@ -6,16 +6,23 @@ tr.element-hover:not(.example-expanded-row):hover {
   background: rgb(191, 190, 190);
 }
 
-th.mat-sort-header-sorted {
-  color: black;
-  align-self: end;
+.mat-column-action {
+  text-align: center;
 }
 
-.mat-column-action {
+.mat-column-countryId {
+  text-align: center;
+}
+
+.mat-column-id {
   text-align: center;
 }
 
 .toCenter {
   margin: 0 auto;
   display: block;
+}
+
+button:hover {
+  background-color: rgb(141, 139, 139);
 }

@@ -44,9 +44,10 @@ export class WilayahNegaraComponent implements OnInit, AfterViewInit {
   totalRec: any;
   pageSize = 10;
   pageIndex = 0;
+
   pageSizeOptions = [10, 20, 100];
+
   getCountry() {
-    let index = 0;
     console.log(this.pageIndex);
     this.dataNegara = [];
     this.dataSource = new MatTableDataSource(this.dataNegara);
@@ -62,9 +63,9 @@ export class WilayahNegaraComponent implements OnInit, AfterViewInit {
         // console.log(res);
         this.totalRec = res.body.paging.totalrecord;
         // console.log(this.totalRec);
-        res.body.result.forEach((element: any) => {
+        res.body.result.forEach((element: any, index: any) => {
           this.dataNegara.push({
-            no: '',
+            no: this.pageIndex * this.pageSize + index + 1,
             countryId: element.countryId,
             countryNameIdn: element.countryNameIdn,
           });
@@ -104,9 +105,9 @@ export class WilayahNegaraComponent implements OnInit, AfterViewInit {
           console.log(res);
           this.totalRec = res.body.paging.totalrecord;
           console.log(this.totalRec);
-          res.body.result.forEach((element: any) => {
+          res.body.result.forEach((element: any, index: any) => {
             this.dataNegara.push({
-              no: '',
+              no: this.pageIndex * this.pageSize + index + 1,
               countryId: element.countryId,
               countryNameIdn: element.countryNameIdn,
             });
@@ -130,9 +131,9 @@ export class WilayahNegaraComponent implements OnInit, AfterViewInit {
         .subscribe((res) => {
           console.log(res);
           this.totalRec = res.body.paging.totalrecord;
-          res.body.result.forEach((element: any) => {
+          res.body.result.forEach((element: any, index: any) => {
             this.dataSearchNegara.push({
-              no: '',
+              no: this.pageIndex * this.pageSize + index + 1,
               countryId: element.countryId,
               countryNameIdn: element.countryNameIdn,
             });
@@ -147,6 +148,7 @@ export class WilayahNegaraComponent implements OnInit, AfterViewInit {
   dataSearchNegara: Negara[] = [];
   searchNegara() {
     this.dataSearchNegara = [];
+    this.pageIndex = 0;
     this.wilayahService
       .getAll(
         'country/?countryNameIdn.contains=' +
@@ -161,9 +163,9 @@ export class WilayahNegaraComponent implements OnInit, AfterViewInit {
       .subscribe((res) => {
         console.log(res);
         this.totalRec = res.body.paging.totalrecord;
-        res.body.result.forEach((element: any) => {
+        res.body.result.forEach((element: any, index: any) => {
           this.dataSearchNegara.push({
-            no: '',
+            no: this.pageIndex * this.pageSize + index + 1,
             countryId: element.countryId,
             countryNameIdn: element.countryNameIdn,
           });
@@ -178,7 +180,7 @@ export class WilayahNegaraComponent implements OnInit, AfterViewInit {
     console.log(idCountry);
     Swal.fire({
       title: 'Are you sure?',
-      text: "You won't be able to revert this!",
+      text: 'Are you sure want delete this data?',
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
