@@ -3,7 +3,7 @@ table {
 }
 
 tr.element-hover:not(.example-expanded-row):hover {
-  background: rgb(191, 190, 190);
+  background: rgb(214, 214, 214);
 }
 
 .mat-column-action {
@@ -23,6 +23,6 @@ tr.element-hover:not(.example-expanded-row):hover {
   display: block;
 }
 
-button:hover {
-  background-color: rgb(141, 139, 139);
+button.mat-icon-button:hover {
+  background-color: rgb(153, 153, 153);
 }

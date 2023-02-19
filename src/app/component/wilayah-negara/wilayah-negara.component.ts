@@ -65,7 +65,7 @@ export class WilayahNegaraComponent implements OnInit, AfterViewInit {
         // console.log(this.totalRec);
         res.body.result.forEach((element: any, index: any) => {
           this.dataNegara.push({
-            no: this.pageIndex * this.pageSize + index + 1,
+            no: this.pageIndex * this.pageSize + index + 1 + '.',
             countryId: element.countryId,
             countryNameIdn: element.countryNameIdn,
           });
@@ -107,7 +107,7 @@ export class WilayahNegaraComponent implements OnInit, AfterViewInit {
           console.log(this.totalRec);
           res.body.result.forEach((element: any, index: any) => {
             this.dataNegara.push({
-              no: this.pageIndex * this.pageSize + index + 1,
+              no: this.pageIndex * this.pageSize + index + 1 + '.',
               countryId: element.countryId,
               countryNameIdn: element.countryNameIdn,
             });
@@ -133,7 +133,7 @@ export class WilayahNegaraComponent implements OnInit, AfterViewInit {
           this.totalRec = res.body.paging.totalrecord;
           res.body.result.forEach((element: any, index: any) => {
             this.dataSearchNegara.push({
-              no: this.pageIndex * this.pageSize + index + 1,
+              no: this.pageIndex * this.pageSize + index + 1 + '.',
               countryId: element.countryId,
               countryNameIdn: element.countryNameIdn,
             });
@@ -165,7 +165,7 @@ export class WilayahNegaraComponent implements OnInit, AfterViewInit {
         this.totalRec = res.body.paging.totalrecord;
         res.body.result.forEach((element: any, index: any) => {
           this.dataSearchNegara.push({
-            no: this.pageIndex * this.pageSize + index + 1,
+            no: this.pageIndex * this.pageSize + index + 1 + '.',
             countryId: element.countryId,
             countryNameIdn: element.countryNameIdn,
           });
