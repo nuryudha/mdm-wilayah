@@ -1,0 +1,16 @@
+.mat-column-action {
+  text-align: center;
+}
+
+tr.element-hover:not(.example-expanded-row):hover {
+  background: rgb(214, 214, 214);
+}
+
+button.mat-icon-button:hover {
+  background-color: rgb(153, 153, 153);
+}
+
+.toCenter {
+  margin: 0 auto;
+  display: block;
+}

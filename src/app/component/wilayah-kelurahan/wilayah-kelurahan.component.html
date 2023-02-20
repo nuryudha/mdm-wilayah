@@ -1,1 +1,213 @@
-<p>wilayah-kelurahan works!</p>
+<div class="container-fluid">
+  <div class="d-flex flex-row-reverse mr-3 mt-3">
+    <button
+      mat-raised-button
+      routerLink="/create-kelurahan"
+      color="primary"
+      style="height: 50px"
+    >
+      <mat-icon>add</mat-icon>
+      Create New
+    </button>
+  </div>
+
+  <div class="row mt-4">
+    <div class="col-12">
+      <mat-card class="toCenter" style="width: 98%">
+        <div class="d-flex mb-3" style="height: 80px">
+          <div class="mr-auto p-2">
+            <h1
+              style="font-family: 'Lucida Sans'; font-size: 35px"
+              class="ml-3 mt-3"
+            >
+              Kelurahan
+            </h1>
+          </div>
+          <div class="p-2">
+            <mat-form-field
+              appearance="outline"
+              style="width: 350px; height: 1px"
+              class="mt-1"
+            >
+              <mat-label>
+                <mat-icon>search</mat-icon>
+                Search
+              </mat-label>
+              <input
+                matInput
+                type="text"
+                appAlfabetOnly
+                [(ngModel)]="searchData"
+                style="width: 80%"
+              />
+            </mat-form-field>
+          </div>
+          <div class="mt-3">
+            <button
+              (click)="searchKelurahan()"
+              color="primary"
+              style="height: 50px; color: white"
+              class="btn btn-warning"
+            >
+              <i class="fa-solid fa-magnifying-glass"></i>
+              Search
+            </button>
+          </div>
+        </div>
+
+        <div>
+          <div class="mat-elevation-z8 toCenter" style="width: 98%">
+            <div>
+              <table
+                mat-table
+                [dataSource]="dataSource"
+                style="width: 100%"
+                #sort="matSort"
+                matSort
+              >
+                <!-- No Column -->
+                <ng-container matColumnDef="no" style="width: 5%">
+                  <th mat-header-cell *matHeaderCellDef>No.</th>
+                  <td mat-cell *matCellDef="let element">
+                    {{ element.no }}
+                  </td>
+                </ng-container>
+
+                <!-- Kolom ID Kelurahan -->
+                <ng-container matColumnDef="villageId">
+                  <th
+                    mat-header-cell
+                    *matHeaderCellDef
+                    style="width: 7%"
+                    mat-sort-header
+                  >
+                    ID Kelurahan
+                  </th>
+                  <td mat-cell *matCellDef="let element">
+                    {{ element.villageId }}
+                  </td>
+                </ng-container>
+
+                <!-- Kolom Nama Kelurahan -->
+                <ng-container matColumnDef="villageName">
+                  <th
+                    mat-header-cell
+                    *matHeaderCellDef
+                    style="width: 11%"
+                    mat-sort-header
+                  >
+                    Kelurahan
+                  </th>
+                  <td mat-cell *matCellDef="let element">
+                    {{ element.villageName }}
+                  </td>
+                </ng-container>
+
+                <!-- Kolom Kode Pos -->
+                <ng-container matColumnDef="villagePostalCode">
+                  <th
+                    mat-header-cell
+                    *matHeaderCellDef
+                    style="width: 7%"
+                    mat-sort-header
+                  >
+                    Kode Pos
+                  </th>
+                  <td mat-cell *matCellDef="let element">
+                    {{ element.villagePostalCode }}
+                  </td>
+                </ng-container>
+
+                <!-- Kolom Nama Kecamatan -->
+                <ng-container matColumnDef="districtName">
+                  <th
+                    mat-header-cell
+                    *matHeaderCellDef
+                    style="width: 14%"
+                    mat-sort-header
+                  >
+                    Kecamatan
+                  </th>
+                  <td mat-cell *matCellDef="let element">
+                    {{ element.districtName }}
+                  </td>
+                </ng-container>
+
+                <!-- Kolom Nama Kabupaten -->
+                <ng-container matColumnDef="cityName">
+                  <th
+                    mat-header-cell
+                    *matHeaderCellDef
+                    style="width: 19%"
+                    mat-sort-header
+                  >
+                    Kabupaten/Kota
+                  </th>
+                  <td mat-cell *matCellDef="let element">
+                    {{ element.cityName }}
+                  </td>
+                </ng-container>
+
+                <!-- Kolom Nama Provinsi -->
+                <ng-container matColumnDef="provinceName">
+                  <th
+                    mat-header-cell
+                    *matHeaderCellDef
+                    style="width: 19%"
+                    mat-sort-header
+                  >
+                    Provinsi
+                  </th>
+                  <td mat-cell *matCellDef="let element">
+                    {{ element.provinceName }}
+                  </td>
+                </ng-container>
+
+                <!-- Kolom Nama negara -->
+                <ng-container matColumnDef="countryNameIdn">
+                  <th mat-header-cell *matHeaderCellDef style="width: 9%">
+                    Negara
+                  </th>
+                  <td mat-cell *matCellDef="let element">
+                    {{ element.countryNameIdn }}
+                  </td>
+                </ng-container>
+
+                <!-- Action Column -->
+                <ng-container matColumnDef="action">
+                  <th mat-header-cell *matHeaderCellDef style="width: 9%">
+                    Action
+                  </th>
+                  <td mat-cell *matCellDef="let element">
+                    <button mat-icon-button color="primary">
+                      <mat-icon>edit</mat-icon>
+                    </button>
+                    <button mat-icon-button color="warn">
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                  </td>
+                </ng-container>
+
+                <tr class="mat-row" *matNoDataRow>
+                  <td
+                    class="mat-cell text-center fs-5 custom-nodata-ontable"
+                    colspan="8"
+                  >
+                    No Data Available!
+                  </td>
+                </tr>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr
+                  mat-row
+                  *matRowDef="let row; columns: displayedColumns"
+                  class="element-hover"
+                ></tr>
+              </table>
+            </div>
+          </div>
+        </div>
+      </mat-card>
+    </div>
+  </div>
+</div>

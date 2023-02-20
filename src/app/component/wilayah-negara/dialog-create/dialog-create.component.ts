@@ -49,6 +49,10 @@ export class DialogCreateComponent implements OnInit {
             title: statusDesc,
             showConfirmButton: false,
             timer: 1500,
+          }).then((res) => {
+            if (res) {
+              this.router.navigate(['/wilayah-negara']);
+            }
           });
         } else if (statusDesc.toLowerCase().includes('already exist')) {
           Swal.fire({

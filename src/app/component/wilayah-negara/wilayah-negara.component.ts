@@ -7,7 +7,7 @@ import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { Negara } from 'src/app/model/negaraModel';
 import { DialogDeleteComponent } from './dialog-delete/dialog-delete.component';
 import { PageEvent } from '@angular/material/paginator';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -16,9 +16,6 @@ import Swal from 'sweetalert2';
   styleUrls: ['./wilayah-negara.component.css'],
 })
 export class WilayahNegaraComponent implements OnInit, AfterViewInit {
-  dataFoods: any;
-  dataCountry: any;
-  titlePage = 'Negara';
   displayedColumns: string[] = ['id', 'countryId', 'countryNameIdn', 'action'];
   dataSource!: MatTableDataSource<Negara>;
   dataNegara: Negara[] = [];
@@ -44,7 +41,6 @@ export class WilayahNegaraComponent implements OnInit, AfterViewInit {
   totalRec: any;
   pageSize = 10;
   pageIndex = 0;
-
   pageSizeOptions = [10, 20, 100];
 
   getCountry() {
@@ -216,7 +212,7 @@ export class WilayahNegaraComponent implements OnInit, AfterViewInit {
       }
     });
   }
-
+  // DIALOG DELELE
   openDeleteDialog(dataCountry: any): void {
     let idCountry = dataCountry.countryId;
     console.log(idCountry);
