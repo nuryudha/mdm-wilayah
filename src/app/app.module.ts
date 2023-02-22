@@ -38,6 +38,11 @@ import { EditProvinsiComponent } from './component/wilayah-provinsi/edit-provins
 import { DeleteProvinsiComponent } from './component/wilayah-provinsi/delete-provinsi/delete-provinsi.component';
 import { AlfabetOnlyDirective } from './directives/alfabet-only.directive';
 
+import { MatSelectModule } from '@angular/material/select';
+import { DataKabupatenComponent } from './component/wilayah-kecamatan/data-kabupaten/data-kabupaten.component';
+import { DataKecamatanComponent } from './component/wilayah-kelurahan/data-kecamatan/data-kecamatan.component';
+import { NumberOnlyDirective } from './directives/number-only.directive';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -62,6 +67,9 @@ import { AlfabetOnlyDirective } from './directives/alfabet-only.directive';
     EditProvinsiComponent,
     DeleteProvinsiComponent,
     AlfabetOnlyDirective,
+    DataKabupatenComponent,
+    DataKecamatanComponent,
+    NumberOnlyDirective,
   ],
   imports: [
     BrowserModule,
@@ -79,6 +87,7 @@ import { AlfabetOnlyDirective } from './directives/alfabet-only.directive';
     MatFormFieldModule,
     FormsModule,
     ReactiveFormsModule,
+    MatSelectModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

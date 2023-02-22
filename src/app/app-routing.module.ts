@@ -95,11 +95,11 @@ const routes: Routes = [
     component: CreateKelurahanComponent,
   },
   {
-    path: 'edit-kecamatan/:id',
+    path: 'edit-kelurahan/:id',
     component: EditKelurahanComponent,
   },
   {
-    path: 'delete-kecamatan/:id',
+    path: 'delete-kelurahan/:id',
     component: DeleteKelurahanComponent,
   },
 ];

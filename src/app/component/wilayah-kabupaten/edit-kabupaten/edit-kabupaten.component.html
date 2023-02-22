@@ -1,1 +1,73 @@
-<p>edit-kabupaten works!</p>
+<div class="container-fluid">
+  <div class="m-2">
+    <h1 style="font-family: 'Lucida Sans'">Buat Kabupaten</h1>
+  </div>
+  <div class="row mt-3">
+    <div class="col-12">
+      <!-- <form (ngSubmit)="createKabupaten()" [formGroup]="formValidasi"> -->
+      <mat-card class="mb-5 toCenter" style="width: 40%">
+        <mat-form-field appearance="outline" style="width: 100%">
+          <mat-label>ID Kabupaten</mat-label>
+          <input
+            matInput
+            required
+            appearance="outline"
+            disabled
+            [(ngModel)]="idKabupaten"
+          />
+        </mat-form-field>
+        <mat-form-field appearance="outline" style="width: 100%">
+          <mat-label>Kabupaten/Kota</mat-label>
+          <input
+            matInput
+            [(ngModel)]="namaKabupaten"
+            appAlfabetOnly
+            required
+            appearance="outline"
+          />
+          <mat-error> Kabupaten/Kota is required</mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="outline" style="width: 100%">
+          <mat-label>Provinsi</mat-label>
+          <mat-select [(ngModel)]="selectIdProvinsi" required>
+            <mat-option>None</mat-option>
+            <mat-option
+              *ngFor="let element of dataProvinsi"
+              [value]="element.provinceId"
+              >{{
+                element.provinceId + " - " + element.provinceName
+              }}</mat-option
+            >
+          </mat-select>
+          <mat-error>Provinsi is required</mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="outline" style="width: 100%">
+          <mat-label>Negara</mat-label>
+          <mat-select [(ngModel)]="selectIdNegara" required>
+            <mat-option>None</mat-option>
+            <mat-option
+              *ngFor="let element of dataNegara"
+              [value]="element.countryId"
+              >{{
+                element.countryId + " - " + element.countryNameIdn
+              }}</mat-option
+            >
+          </mat-select>
+          <mat-error>Negara is required</mat-error>
+        </mat-form-field>
+        <button
+          mat-raised-button
+          color="primary"
+          class="mx-3"
+          (click)="saveEditKabupaten()"
+        >
+          Save
+        </button>
+        <button mat-raised-button routerLink="/wilayah-kabupaten">
+          Cancel
+        </button>
+      </mat-card>
+      <!-- </form> -->
+    </div>
+  </div>
+</div>

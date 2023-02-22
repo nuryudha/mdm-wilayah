@@ -56,9 +56,7 @@ export class WilayahNegaraComponent implements OnInit, AfterViewInit {
           this.pageSize
       )
       .subscribe((res) => {
-        // console.log(res);
         this.totalRec = res.body.paging.totalrecord;
-        // console.log(this.totalRec);
         res.body.result.forEach((element: any, index: any) => {
           this.dataNegara.push({
             no: this.pageIndex * this.pageSize + index + 1 + '.',

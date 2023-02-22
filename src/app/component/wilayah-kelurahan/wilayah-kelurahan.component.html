@@ -179,10 +179,18 @@
                     Action
                   </th>
                   <td mat-cell *matCellDef="let element">
-                    <button mat-icon-button color="primary">
+                    <button
+                      mat-icon-button
+                      color="primary"
+                      routerLink="/edit-kelurahan/{{ element.villageId }}"
+                    >
                       <mat-icon>edit</mat-icon>
                     </button>
-                    <button mat-icon-button color="warn">
+                    <button
+                      mat-icon-button
+                      color="warn"
+                      (click)="deleteKelurahan(element)"
+                    >
                       <mat-icon>delete</mat-icon>
                     </button>
                   </td>
@@ -204,6 +212,17 @@
                   class="element-hover"
                 ></tr>
               </table>
+              <mat-paginator
+                #paginator
+                showFirstLastButtons
+                (page)="handlePageEvent($event)"
+                [length]="totalRec"
+                [pageSize]="pageSize"
+                [pageIndex]="pageIndex"
+                [pageSizeOptions]="pageSizeOptions"
+                aria-label="Select page"
+              >
+              </mat-paginator>
             </div>
           </div>
         </div>

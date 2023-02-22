@@ -6,7 +6,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { Negara } from 'src/app/model/negaraModel';
 import { PageEvent } from '@angular/material/paginator';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import Swal from 'sweetalert2';
 import { Provinsi } from 'src/app/model/provinsiModel';
 
@@ -16,7 +16,7 @@ import { Provinsi } from 'src/app/model/provinsiModel';
   styleUrls: ['./wilayah-provinsi.component.css'],
 })
 export class WilayahProvinsiComponent implements OnInit {
-  constructor(private wilayahService: WilayahService) {}
+  constructor(private wilayahService: WilayahService, private router: Router) {}
 
   displayedColumns = [
     'id',
@@ -62,6 +62,7 @@ export class WilayahProvinsiComponent implements OnInit {
           this.dataProvinsi.push({
             no: this.pageIndex * this.pageSize + index + 1 + '.',
             countryNameIdn: element.countryNameIdn,
+            countryId: element.countryId,
             provinceId: element.provinceId,
             provinceName: element.provinceName,
           });
@@ -99,6 +100,7 @@ export class WilayahProvinsiComponent implements OnInit {
           res.body.result.forEach((element: any, index: any) => {
             this.dataSearchProvinsi.push({
               no: this.pageIndex * this.pageSize + index + 1 + '.',
+              countryId: element.countryId,
               countryNameIdn: element.countryNameIdn,
               provinceId: element.provinceId,
               provinceName: element.provinceName,
@@ -124,6 +126,7 @@ export class WilayahProvinsiComponent implements OnInit {
             this.dataProvinsi.push({
               no: this.pageIndex * this.pageSize + index + 1 + '.',
               countryNameIdn: element.countryNameIdn,
+              countryId: element.countryId,
               provinceId: element.provinceId,
               provinceName: element.provinceName,
             });
@@ -156,6 +159,7 @@ export class WilayahProvinsiComponent implements OnInit {
           this.dataSearchProvinsi.push({
             no: this.pageIndex * this.pageSize + index + 1 + '.',
             countryNameIdn: element.countryNameIdn,
+            countryId: element.countryId,
             provinceId: element.provinceId,
             provinceName: element.provinceName,
           });
@@ -163,6 +167,16 @@ export class WilayahProvinsiComponent implements OnInit {
         this.dataSource = new MatTableDataSource(this.dataSearchProvinsi);
         this.ngAfterViewInit();
       });
+  }
+
+  editProvinsi(dataProvinsi: any) {
+    this.router.navigate(['/edit-provinsi/'], {
+      queryParams: {
+        idProvinsi: dataProvinsi.provinceId,
+        namaProvinsi: dataProvinsi.provinceName,
+        idNegara: dataProvinsi.countryId,
+      },
+    });
   }
 
   deleteProvinsi(dataProvinsi: any) {

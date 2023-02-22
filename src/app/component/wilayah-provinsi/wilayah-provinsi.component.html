@@ -113,6 +113,13 @@
                   </td>
                 </ng-container>
 
+                <ng-container
+                  matColumnDef="countryId"
+                  *matCellDef="let element"
+                >
+                  {{ element.countryId }}
+                </ng-container>
+
                 <!-- Action Column -->
                 <ng-container matColumnDef="action">
                   <th mat-header-cell *matHeaderCellDef style="width: 15%">
@@ -124,6 +131,7 @@
                       color="primary"
                       routerLink="/edit-provinsi/{{ element.provinceId }}"
                     >
+                      <!-- (click)="editProvinsi(element)" -->
                       <mat-icon>edit</mat-icon>
                     </button>
                     <button

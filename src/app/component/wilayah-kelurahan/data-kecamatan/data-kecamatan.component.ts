@@ -1,36 +1,36 @@
 import { Component, OnInit } from '@angular/core';
-import { Kecamatan } from 'src/app/model/kecamatanModel';
-import { MatTableDataSource } from '@angular/material/table';
-import { WilayahService } from '../wilayah.service';
 import { PageEvent } from '@angular/material/paginator';
-import Swal from 'sweetalert2';
+import { MatTableDataSource } from '@angular/material/table';
+import { DataKecamatan } from 'src/app/model/kecamatanModel';
+import { WilayahService } from '../../wilayah.service';
+import { MatDialogRef } from '@angular/material/dialog';
 
 @Component({
-  selector: 'app-wilayah-kecamatan',
-  templateUrl: './wilayah-kecamatan.component.html',
-  styleUrls: ['./wilayah-kecamatan.component.css'],
+  selector: 'app-data-kecamatan',
+  templateUrl: './data-kecamatan.component.html',
+  styleUrls: ['./data-kecamatan.component.css'],
 })
-export class WilayahKecamatanComponent implements OnInit {
-  constructor(private wilayahService: WilayahService) {}
-
+export class DataKecamatanComponent implements OnInit {
+  constructor(
+    private wilayahService: WilayahService,
+    public dialogRef: MatDialogRef<DataKecamatanComponent>
+  ) {}
   displayedColumns = [
-    'no',
     'districtId',
     'districtName',
     'cityName',
     'provinceName',
     'countryNameIdn',
-    'action',
   ];
   totalRec: any;
   pageSize = 10;
   pageIndex = 0;
   pageSizeOptions = [10, 20, 100];
+  pageEvent!: PageEvent;
   searchData: any;
   dataSearchKecamatan: any;
-  dataKecamatan: Kecamatan[] = [];
-  dataSource!: MatTableDataSource<Kecamatan>;
-  pageEvent!: PageEvent;
+  dataSource!: MatTableDataSource<DataKecamatan>;
+  dataKecamatan: DataKecamatan[] = [];
 
   getKecamatan() {
     this.dataKecamatan = [];
@@ -48,8 +48,11 @@ export class WilayahKecamatanComponent implements OnInit {
             no: this.pageIndex * this.pageSize + index + 1 + '.',
             districtId: element.districtId,
             districtName: element.districtName,
+            cityId: element.cityId,
             cityName: element.cityName,
+            provinceId: element.provinceId,
             provinceName: element.provinceName,
+            countryId: element.countryId,
             countryNameIdn: element.countryNameIdn,
           });
         });
@@ -61,6 +64,7 @@ export class WilayahKecamatanComponent implements OnInit {
     this.pageEvent = e;
     this.pageSize = e.pageSize;
     this.pageIndex = e.pageIndex;
+    console.log(this.pageEvent);
     // * getKecamatan
     this.dataKecamatan = [];
     if (this.searchData == null) {
@@ -81,8 +85,11 @@ export class WilayahKecamatanComponent implements OnInit {
               no: this.pageIndex * this.pageSize + index + 1 + '.',
               districtId: element.districtId,
               districtName: element.districtName,
+              cityId: element.cityId,
               cityName: element.cityName,
+              provinceId: element.provinceId,
               provinceName: element.provinceName,
+              countryId: element.countryId,
               countryNameIdn: element.countryNameIdn,
             });
           });
@@ -92,7 +99,7 @@ export class WilayahKecamatanComponent implements OnInit {
       this.dataSearchKecamatan = [];
       this.wilayahService
         .getAll(
-          'district/?districtId.contains=' +
+          'district/?district.contains=' +
             this.searchData +
             '&districtName.contains=' +
             this.searchData +
@@ -102,7 +109,7 @@ export class WilayahKecamatanComponent implements OnInit {
             this.searchData +
             '&countryNameIdn.contains=' +
             this.searchData +
-            '&sort=districtName,asc&page=' +
+            '&page=' +
             this.pageIndex +
             '&size=' +
             this.pageSize
@@ -114,8 +121,11 @@ export class WilayahKecamatanComponent implements OnInit {
               no: this.pageIndex * this.pageSize + index + 1 + '.',
               districtId: element.districtId,
               districtName: element.districtName,
+              cityId: element.cityId,
               cityName: element.cityName,
+              provinceId: element.provinceId,
               provinceName: element.provinceName,
+              countryId: element.countryId,
               countryNameIdn: element.countryNameIdn,
             });
           });
@@ -123,12 +133,13 @@ export class WilayahKecamatanComponent implements OnInit {
         });
     }
   }
-  searchKecamatan() {
+
+  searchKabupaten() {
     this.pageIndex = 0;
     this.dataSearchKecamatan = [];
     this.wilayahService
       .getAll(
-        'district/?districtId.contains=' +
+        'district/?district.contains=' +
           this.searchData +
           '&districtName.contains=' +
           this.searchData +
@@ -138,7 +149,7 @@ export class WilayahKecamatanComponent implements OnInit {
           this.searchData +
           '&countryNameIdn.contains=' +
           this.searchData +
-          '&sort=districtName,asc&page=' +
+          '&page=' +
           this.pageIndex +
           '&size=' +
           this.pageSize
@@ -150,8 +161,11 @@ export class WilayahKecamatanComponent implements OnInit {
             no: this.pageIndex * this.pageSize + index + 1 + '.',
             districtId: element.districtId,
             districtName: element.districtName,
+            cityId: element.cityId,
             cityName: element.cityName,
+            provinceId: element.provinceId,
             provinceName: element.provinceName,
+            countryId: element.countryId,
             countryNameIdn: element.countryNameIdn,
           });
         });
@@ -159,45 +173,9 @@ export class WilayahKecamatanComponent implements OnInit {
       });
   }
 
-  deleteKecamatan(dataKecamatan: any) {
-    let kecamatanId = dataKecamatan.districtId;
-    console.log(kecamatanId);
-    Swal.fire({
-      title: 'Are you sure?',
-      text: 'Are you sure want delete this data?',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, delete it!',
-    }).then((res) => {
-      if (res.isConfirmed) {
-        this.wilayahService
-          .deleteAll('district/' + kecamatanId)
-          .subscribe((res) => {
-            let statusCode = res.body.status.responseCode;
-            if (statusCode == '200') {
-              Swal.fire({
-                position: 'center',
-                icon: 'success',
-                title: 'Berhasil',
-                showConfirmButton: false,
-                timer: 1500,
-              }).then((res) => {
-                if (res) this.getKecamatan();
-              });
-            } else {
-              Swal.fire({
-                position: 'center',
-                icon: 'error',
-                title: 'Gagal',
-                showConfirmButton: false,
-                timer: 1500,
-              });
-            }
-          });
-      }
-    });
+  chooseCell(dataKecamatan: any) {
+    console.log(dataKecamatan);
+    this.dialogRef.close(dataKecamatan);
   }
 
   ngOnInit(): void {
