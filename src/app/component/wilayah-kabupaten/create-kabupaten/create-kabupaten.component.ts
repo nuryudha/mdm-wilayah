@@ -6,6 +6,7 @@ import { Provinsi } from 'src/app/model/provinsiModel';
 import Swal from 'sweetalert2';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-create-kabupaten',
@@ -16,7 +17,8 @@ export class CreateKabupatenComponent implements OnInit {
   constructor(
     private wilayahService: WilayahService,
     private router: Router,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private title: Title
   ) {
     this.cekValidasi();
   }
@@ -102,5 +104,6 @@ export class CreateKabupatenComponent implements OnInit {
   ngOnInit(): void {
     this.getCountry();
     this.getProvinsi();
+    this.title.setTitle('Buat Kabupaten');
   }
 }

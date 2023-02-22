@@ -4,80 +4,94 @@
   </div>
   <div class="row mt-3">
     <div class="col-12">
-      <!-- <form (ngSubmit)="createKecamatan()" [formGroup]="formValidasi"> -->
-      <mat-card class="mb-5 toCenter" style="width: 40%">
-        <mat-form-field appearance="outline" style="width: 100%">
-          <mat-label>ID Kecamatan</mat-label>
-          <input matInput required appearance="outline" />
-        </mat-form-field>
-        <mat-form-field appearance="outline" style="width: 100%">
-          <mat-label>Kecamatan</mat-label>
-          <input
-            matInput
-            appAlfabetOnly
-            required
+      <form (ngSubmit)="createKecamatan()" [formGroup]="formValidasi">
+        <mat-card class="mb-5 toCenter" style="width: 40%">
+          <mat-form-field appearance="outline" style="width: 100%">
+            <mat-label>ID Kecamatan</mat-label>
+            <input
+              matInput
+              formControlName="idKecamatan"
+              name="idKecamatan"
+              required
+              appearance="outline"
+            />
+          </mat-form-field>
+          <mat-form-field appearance="outline" style="width: 100%">
+            <mat-label>Kecamatan</mat-label>
+            <input
+              matInput
+              formControlName="namaKecamatan"
+              name="namaKecamatan"
+              [(ngModel)]="namaKecamatan"
+              appAlfabetOnly
+              required
+              appearance="outline"
+              maxlength="50"
+            />
+            <mat-error> Kecamatan is required </mat-error>
+          </mat-form-field>
+          <mat-form-field
             appearance="outline"
-            [(ngModel)]="namaKecamatan"
-          />
-          <mat-error> Kecamatan is required </mat-error>
-        </mat-form-field>
-        <mat-form-field
-          appearance="outline"
-          style="width: 100%"
-          (click)="getDataKabupaten()"
-        >
-          <mat-label>Kabupaten/Kota </mat-label>
-          <input
-            matInput
-            appAlfabetOnly
-            required
-            appearance="outline"
-            [(ngModel)]="namaKabupaten"
-          />
-          <mat-icon matSuffix>search</mat-icon>
-          <mat-error>Kabupaten/Kota is required </mat-error>
-        </mat-form-field>
-        <mat-form-field appearance="outline" style="width: 100%">
-          <mat-label>Provinsi</mat-label>
-          <mat-select [(ngModel)]="selectNameProvinsi" required>
-            <mat-option>None</mat-option>
-            <mat-option
-              *ngFor="let element of dataProvinsi"
-              [value]="element.provinceName"
-              >{{
-                element.provinceId + " - " + element.provinceName
-              }}</mat-option
+            style="width: 100%"
+            (click)="getDataKabupaten()"
+          >
+            <mat-label>Kabupaten/Kota </mat-label>
+            <input
+              matInput
+              formControlName="namaKabupaten"
+              name="namaKabupaten"
+              [(ngModel)]="namaKabupaten"
+              appAlfabetOnly
+              required
+              appearance="outline"
+            />
+            <mat-icon matSuffix>search</mat-icon>
+            <mat-error>Kabupaten/Kota is required </mat-error>
+          </mat-form-field>
+          <mat-form-field appearance="outline" style="width: 100%">
+            <mat-label>Provinsi</mat-label>
+            <mat-select
+              [(ngModel)]="selectIdProvinsi"
+              formControlName="selectIdProvinsi"
+              name="selectIdProvinsi"
+              required
             >
-          </mat-select>
-          <mat-error>Provinsi is required </mat-error>
-        </mat-form-field>
-        <mat-form-field appearance="outline" style="width: 100%">
-          <mat-label>Negara</mat-label>
-          <mat-select required [(ngModel)]="selectNameNegara">
-            <mat-option>None</mat-option>
-            <mat-option
-              *ngFor="let element of dataNegara"
-              [value]="element.countryNameIdn"
-              >{{
-                element.countryId + " - " + element.countryNameIdn
-              }}</mat-option
+              <mat-option>None</mat-option>
+              <mat-option
+                *ngFor="let element of dataProvinsi"
+                [value]="element.provinceId"
+                >{{
+                  element.provinceId + " - " + element.provinceName
+                }}</mat-option
+              >
+            </mat-select>
+            <mat-error>Provinsi is required </mat-error>
+          </mat-form-field>
+          <mat-form-field appearance="outline" style="width: 100%">
+            <mat-label>Negara</mat-label>
+            <mat-select
+              required
+              [(ngModel)]="selectIdNegara"
+              formControlName="selectIdNegara"
+              name="selectIdNegara"
             >
-          </mat-select>
-          <mat-error>Negara is required </mat-error>
-        </mat-form-field>
-        <button
-          mat-raised-button
-          color="primary"
-          class="mx-3"
-          (click)="createKecamatan()"
-        >
-          Save
-        </button>
-        <button mat-raised-button routerLink="/wilayah-kecamatan">
-          Cancel
-        </button>
-      </mat-card>
-      <!-- </form> -->
+              <mat-option>None</mat-option>
+              <mat-option
+                *ngFor="let element of dataNegara"
+                [value]="element.countryId"
+                >{{
+                  element.countryId + " - " + element.countryNameIdn
+                }}</mat-option
+              >
+            </mat-select>
+            <mat-error>Negara is required </mat-error>
+          </mat-form-field>
+          <button mat-raised-button color="primary" class="mx-3">Save</button>
+          <button mat-raised-button routerLink="/wilayah-kecamatan">
+            Cancel
+          </button>
+        </mat-card>
+      </form>
     </div>
   </div>
 </div>

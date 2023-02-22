@@ -4,6 +4,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { WilayahService } from '../wilayah.service';
 import { PageEvent } from '@angular/material/paginator';
 import Swal from 'sweetalert2';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-wilayah-kecamatan',
@@ -11,7 +12,7 @@ import Swal from 'sweetalert2';
   styleUrls: ['./wilayah-kecamatan.component.css'],
 })
 export class WilayahKecamatanComponent implements OnInit {
-  constructor(private wilayahService: WilayahService) {}
+  constructor(private wilayahService: WilayahService, private title: Title) {}
 
   displayedColumns = [
     'no',
@@ -202,5 +203,6 @@ export class WilayahKecamatanComponent implements OnInit {
 
   ngOnInit(): void {
     this.getKecamatan();
+    this.title.setTitle('Kecamatan');
   }
 }

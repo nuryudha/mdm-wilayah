@@ -5,6 +5,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-create-provinsi',
@@ -15,7 +16,8 @@ export class CreateProvinsiComponent implements OnInit {
   constructor(
     private wilayahService: WilayahService,
     private router: Router,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private title: Title
   ) {
     this.dataSource = new MatTableDataSource(this.dataNegara);
     this.cekValidasi();
@@ -85,5 +87,6 @@ export class CreateProvinsiComponent implements OnInit {
 
   ngOnInit(): void {
     this.getCountry();
+    this.title.setTitle('Buat Provinsi');
   }
 }

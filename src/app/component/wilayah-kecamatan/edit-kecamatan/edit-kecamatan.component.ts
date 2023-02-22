@@ -7,6 +7,7 @@ import { DataKabupatenComponent } from '../data-kabupaten/data-kabupaten.compone
 import { WilayahService } from '../../wilayah.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import Swal from 'sweetalert2';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-edit-kecamatan',
@@ -18,7 +19,8 @@ export class EditKecamatanComponent implements OnInit {
     private dialog: MatDialog,
     private wilayahService: WilayahService,
     private activatedRoute: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private title: Title
   ) {}
 
   dataSourceNegara!: MatTableDataSource<Negara>;
@@ -97,11 +99,12 @@ export class EditKecamatanComponent implements OnInit {
     this.wilayahService.putId('district', parameter).subscribe((res) => {
       console.log(res);
       let statusCode = res.body.status.responseCode;
+      let statusDesc = res.body.status.responseDesc;
       if (statusCode == '200') {
         Swal.fire({
           position: 'center',
           icon: 'success',
-          title: 'Berhasil',
+          title: statusDesc,
           showConfirmButton: false,
           timer: 1500,
         }).then((res) => {
@@ -109,11 +112,19 @@ export class EditKecamatanComponent implements OnInit {
             this.router.navigate(['/wilayah-kecamatan']);
           }
         });
+      } else if (statusCode == '400') {
+        Swal.fire({
+          position: 'center',
+          icon: 'error',
+          title: statusDesc,
+          showConfirmButton: false,
+          timer: 1500,
+        });
       } else {
         Swal.fire({
           position: 'center',
           icon: 'error',
-          title: 'Gagal',
+          title: 'Service Not Found',
           showConfirmButton: false,
           timer: 1500,
         });
@@ -127,5 +138,6 @@ export class EditKecamatanComponent implements OnInit {
     this.getCountry();
     this.getProvinsi();
     this.getIdKecamatan();
+    this.title.setTitle('Edit Kecamatan');
   }
 }

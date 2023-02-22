@@ -8,6 +8,7 @@ import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { DataKecamatanComponent } from '../data-kecamatan/data-kecamatan.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import Swal from 'sweetalert2';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-edit-kelurahan',
@@ -19,7 +20,8 @@ export class EditKelurahanComponent implements OnInit {
     private wilayahService: WilayahService,
     private dialog: MatDialog,
     private activatedRoute: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private title: Title
   ) {}
   id: any;
 
@@ -146,5 +148,6 @@ export class EditKelurahanComponent implements OnInit {
     this.getProvinsi();
     this.getKabupaten();
     this.getIdKelurahan();
+    this.title.setTitle('Edit Kelurahan');
   }
 }

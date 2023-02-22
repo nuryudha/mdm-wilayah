@@ -9,6 +9,7 @@ import { PageEvent } from '@angular/material/paginator';
 import { ActivatedRoute, Router } from '@angular/router';
 import Swal from 'sweetalert2';
 import { Provinsi } from 'src/app/model/provinsiModel';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-wilayah-provinsi',
@@ -16,7 +17,11 @@ import { Provinsi } from 'src/app/model/provinsiModel';
   styleUrls: ['./wilayah-provinsi.component.css'],
 })
 export class WilayahProvinsiComponent implements OnInit {
-  constructor(private wilayahService: WilayahService, private router: Router) {}
+  constructor(
+    private wilayahService: WilayahService,
+    private router: Router,
+    private title: Title
+  ) {}
 
   displayedColumns = [
     'id',
@@ -222,5 +227,6 @@ export class WilayahProvinsiComponent implements OnInit {
 
   ngOnInit(): void {
     this.getProvince();
+    this.title.setTitle('Provinsi');
   }
 }

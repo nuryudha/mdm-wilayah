@@ -20,6 +20,7 @@ import { DeleteKecamatanComponent } from './component/wilayah-kecamatan/delete-k
 import { CreateKelurahanComponent } from './component/wilayah-kelurahan/create-kelurahan/create-kelurahan.component';
 import { EditKelurahanComponent } from './component/wilayah-kelurahan/edit-kelurahan/edit-kelurahan.component';
 import { DeleteKelurahanComponent } from './component/wilayah-kelurahan/delete-kelurahan/delete-kelurahan.component';
+import { BrowserModule } from '@angular/platform-browser';
 
 const routes: Routes = [
   {
@@ -105,7 +106,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [BrowserModule, RouterModule.forRoot(routes)],
   exports: [RouterModule],
 })
 export class AppRoutingModule {}

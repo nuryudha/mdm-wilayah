@@ -1,13 +1,9 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import {
-  FormControl,
-  Validators,
-  FormBuilder,
-  FormGroup,
-} from '@angular/forms';
+import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { WilayahService } from '../../wilayah.service';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-dialog-create',
@@ -20,7 +16,8 @@ export class DialogCreateComponent implements OnInit {
   constructor(
     private wilayahService: WilayahService,
     private router: Router,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private title: Title
   ) {
     this.cekValidasi();
   }
@@ -77,5 +74,7 @@ export class DialogCreateComponent implements OnInit {
     }
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.title.setTitle('Buat Negara');
+  }
 }

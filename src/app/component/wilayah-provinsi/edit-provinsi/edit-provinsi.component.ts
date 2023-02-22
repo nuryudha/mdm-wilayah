@@ -5,6 +5,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import Swal from 'sweetalert2';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-edit-provinsi',
@@ -15,7 +16,8 @@ export class EditProvinsiComponent implements OnInit {
   constructor(
     private wilayahService: WilayahService,
     private activatedRoute: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private title: Title
   ) {}
 
   dataNegara: Negara[] = [];
@@ -80,5 +82,6 @@ export class EditProvinsiComponent implements OnInit {
     this.idProvinsi = this.id;
     this.getCountry();
     this.getIdProvinsi();
+    this.title.setTitle('Edit Provinsi');
   }
 }

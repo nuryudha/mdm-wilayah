@@ -8,6 +8,7 @@ import { Provinsi } from 'src/app/model/provinsiModel';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import Swal from 'sweetalert2';
 import { Router } from '@angular/router';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-create-kecamatan',
@@ -19,8 +20,11 @@ export class CreateKecamatanComponent implements OnInit {
     private wilayahService: WilayahService,
     private dialog: MatDialog,
     private formBuilder: FormBuilder,
-    private router: Router
-  ) {}
+    private router: Router,
+    private title: Title
+  ) {
+    this.cekValidasi();
+  }
   selectNameProvinsi: any;
   selectIdProvinsi: any;
   selectNameNegara: any;
@@ -64,9 +68,9 @@ export class CreateKecamatanComponent implements OnInit {
         this.namaKabupaten = res.cityName;
         this.idKabupaten = res.cityId;
         this.selectNameProvinsi = res.provinceName;
-        this.selectIdProvinsi = res.countryId;
+        this.selectIdProvinsi = res.provinceId;
         this.selectNameNegara = res.countryNameIdn;
-        this.selectIdNegara = res.provinceId;
+        this.selectIdNegara = res.countryId;
       });
   }
   createKecamatan() {
@@ -118,13 +122,14 @@ export class CreateKecamatanComponent implements OnInit {
       idKecamatan: { value: '', disabled: true },
       namaKecamatan: ['', [Validators.required]],
       namaKabupaten: ['', [Validators.required]],
-      selectIdProvinsi: ['', [Validators.required]],
-      selectIdNegara: ['', [Validators.required]],
+      selectIdProvinsi: { value: '', disabled: true },
+      selectIdNegara: { value: '', disabled: true },
     });
   }
 
   ngOnInit(): void {
     this.getCountry();
     this.getProvinsi();
+    this.title.setTitle('Buat Kecamatan');
   }
 }

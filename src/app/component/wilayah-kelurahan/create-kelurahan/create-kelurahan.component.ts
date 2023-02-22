@@ -8,6 +8,8 @@ import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { DataKecamatanComponent } from '../data-kecamatan/data-kecamatan.component';
 import Swal from 'sweetalert2';
 import { Router } from '@angular/router';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-create-kelurahan',
@@ -18,8 +20,12 @@ export class CreateKelurahanComponent implements OnInit {
   constructor(
     private wilayahService: WilayahService,
     private dialog: MatDialog,
-    private router: Router
-  ) {}
+    private router: Router,
+    private formBuilder: FormBuilder,
+    private title: Title
+  ) {
+    this.cekValidasi();
+  }
 
   namaKelurahan: any;
   kodePos: any;
@@ -34,6 +40,7 @@ export class CreateKelurahanComponent implements OnInit {
   dataSourceProvinsi!: MatTableDataSource<Provinsi>;
   dataKabupaten: Kabupaten[] = [];
   dataSourceKabupaten!: MatTableDataSource<Kabupaten>;
+  formValidasi!: FormGroup;
 
   getCountry() {
     this.wilayahService.getAll('country/?page=1&size=1000').subscribe((res) => {
@@ -121,10 +128,22 @@ export class CreateKelurahanComponent implements OnInit {
       }
     });
   }
+  cekValidasi() {
+    this.formValidasi = this.formBuilder.group({
+      idKelurahan: { value: '', disabled: true },
+      namaKelurahan: ['', [Validators.required]],
+      kodePos: ['', [Validators.required]],
+      namaKecamatan: ['', [Validators.required]],
+      selectIdKabupaten: { value: '', disabled: true },
+      selectIdProvinsi: { value: '', disabled: true },
+      selectIdNegara: { value: '', disabled: true },
+    });
+  }
 
   ngOnInit(): void {
     this.getCountry();
     this.getProvinsi();
     this.getKabupaten();
+    this.title.setTitle('Buat Kelurahan');
   }
 }

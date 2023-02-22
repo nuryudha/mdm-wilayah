@@ -13,6 +13,7 @@
             required
             appearance="outline"
             [(ngModel)]="idKecamatan"
+            disabled
           />
         </mat-form-field>
         <mat-form-field appearance="outline" style="width: 100%">
@@ -23,6 +24,7 @@
             required
             appearance="outline"
             [(ngModel)]="namaKecamatan"
+            maxlength="50"
           />
           <mat-error> Kecamatan is required </mat-error>
         </mat-form-field>
@@ -44,7 +46,7 @@
         </mat-form-field>
         <mat-form-field appearance="outline" style="width: 100%">
           <mat-label>Provinsi</mat-label>
-          <mat-select [(ngModel)]="selectNameProvinsi" required>
+          <mat-select [(ngModel)]="selectNameProvinsi" required disabled>
             <mat-option>None</mat-option>
             <mat-option
               *ngFor="let element of dataProvinsi"
@@ -58,7 +60,7 @@
         </mat-form-field>
         <mat-form-field appearance="outline" style="width: 100%">
           <mat-label>Negara</mat-label>
-          <mat-select required [(ngModel)]="selectNameNegara">
+          <mat-select required [(ngModel)]="selectNameNegara" disabled>
             <mat-option>None</mat-option>
             <mat-option
               *ngFor="let element of dataNegara"

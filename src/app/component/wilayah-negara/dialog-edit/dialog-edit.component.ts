@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { WilayahService } from '../../wilayah.service';
-import { NegaraModel } from 'src/app/model/negaraModel';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormControl, Validators } from '@angular/forms';
 import Swal from 'sweetalert2';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-dialog-edit',
@@ -18,12 +17,14 @@ export class DialogEditComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private wilayahService: WilayahService
+    private wilayahService: WilayahService,
+    private title: Title
   ) {}
 
   ngOnInit(): void {
     this.id = this.route.snapshot.params['id'];
     this.getId();
+    this.title.setTitle('Edit Negara');
   }
 
   getId() {

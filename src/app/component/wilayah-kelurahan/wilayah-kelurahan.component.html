@@ -47,7 +47,7 @@
               (click)="searchKelurahan()"
               color="primary"
               style="height: 50px; color: white"
-              class="btn btn-warning"
+              class="btn btn-warning mr-3 ml-1"
             >
               <i class="fa-solid fa-magnifying-glass"></i>
               Search
@@ -58,6 +58,7 @@
         <div>
           <div class="mat-elevation-z8 toCenter" style="width: 98%">
             <div>
+              <mat-spinner *ngIf="isLoading" class="container"></mat-spinner>
               <table
                 mat-table
                 [dataSource]="dataSource"

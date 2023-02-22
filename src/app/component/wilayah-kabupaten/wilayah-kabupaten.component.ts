@@ -1,14 +1,10 @@
 import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { WilayahService } from '../wilayah.service';
-import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { MatPaginator } from '@angular/material/paginator';
-import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-import { Negara } from 'src/app/model/negaraModel';
 import { PageEvent } from '@angular/material/paginator';
-import { ActivatedRoute } from '@angular/router';
 import Swal from 'sweetalert2';
 import { Kabupaten } from 'src/app/model/kabupatenModel';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-wilayah-kabupaten',
@@ -16,7 +12,7 @@ import { Kabupaten } from 'src/app/model/kabupatenModel';
   styleUrls: ['./wilayah-kabupaten.component.css'],
 })
 export class WilayahKabupatenComponent implements OnInit {
-  constructor(private wilayahService: WilayahService) {}
+  constructor(private wilayahService: WilayahService, private title: Title) {}
 
   displayedColumns = [
     'no',
@@ -200,5 +196,6 @@ export class WilayahKabupatenComponent implements OnInit {
 
   ngOnInit(): void {
     this.getKabupaten();
+    this.title.setTitle('Kabupaten');
   }
 }

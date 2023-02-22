@@ -42,6 +42,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { DataKabupatenComponent } from './component/wilayah-kecamatan/data-kabupaten/data-kabupaten.component';
 import { DataKecamatanComponent } from './component/wilayah-kelurahan/data-kecamatan/data-kecamatan.component';
 import { NumberOnlyDirective } from './directives/number-only.directive';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @NgModule({
   declarations: [
@@ -88,6 +89,7 @@ import { NumberOnlyDirective } from './directives/number-only.directive';
     FormsModule,
     ReactiveFormsModule,
     MatSelectModule,
+    MatProgressSpinnerModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

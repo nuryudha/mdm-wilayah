@@ -1,17 +1,17 @@
 import { Component, OnInit } from '@angular/core';
-
 import { MatTableDataSource } from '@angular/material/table';
 import { WilayahService } from '../wilayah.service';
 import { Keluarahan } from 'src/app/model/kelurahanModel';
 import { PageEvent } from '@angular/material/paginator';
 import Swal from 'sweetalert2';
+import { Title } from '@angular/platform-browser';
 @Component({
   selector: 'app-wilayah-kelurahan',
   templateUrl: './wilayah-kelurahan.component.html',
   styleUrls: ['./wilayah-kelurahan.component.css'],
 })
 export class WilayahKelurahanComponent implements OnInit {
-  constructor(private wilayahService: WilayahService) {}
+  constructor(private wilayahService: WilayahService, private title: Title) {}
 
   displayedColumns = [
     'no',
@@ -33,8 +33,10 @@ export class WilayahKelurahanComponent implements OnInit {
   dataKeluarahan: Keluarahan[] = [];
   dataSource!: MatTableDataSource<Keluarahan>;
   dataSearchKeluarahan: any;
+  isLoading = false;
 
   getKelurahan() {
+    this.isLoading = true;
     this.dataKeluarahan = [];
     this.dataSource = new MatTableDataSource(this.dataKeluarahan);
     this.wilayahService
@@ -44,22 +46,45 @@ export class WilayahKelurahanComponent implements OnInit {
           '&size=' +
           this.pageSize
       )
-      .subscribe((res) => {
-        this.totalRec = res.body.paging.totalrecord;
-        res.body.result.forEach((element: any, index: any) => {
-          this.dataKeluarahan.push({
-            no: this.pageIndex * this.pageSize + index + 1 + '.',
-            villageId: element.villageId,
-            villageName: element.villageName,
-            villagePostalCode: element.villagePostalCode,
-            districtName: element.districtName,
-            cityName: element.cityName,
-            provinceName: element.provinceName,
-            countryNameIdn: element.countryNameIdn,
+      .subscribe(
+        (res) => {
+          this.totalRec = res.body.paging.totalrecord;
+          res.body.result.forEach((element: any, index: any) => {
+            this.isLoading = false;
+            this.dataKeluarahan.push({
+              no: this.pageIndex * this.pageSize + index + 1 + '.',
+              villageId: element.villageId,
+              villageName: element.villageName,
+              villagePostalCode: element.villagePostalCode,
+              districtName: element.districtName,
+              cityName: element.cityName,
+              provinceName: element.provinceName,
+              countryNameIdn: element.countryNameIdn,
+            });
           });
-        });
-        this.dataSource = new MatTableDataSource(this.dataKeluarahan);
-      });
+          this.dataSource = new MatTableDataSource(this.dataKeluarahan);
+        },
+        (error) => {
+          console.log(error);
+          const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+
+            didOpen: (toast) => {
+              toast.addEventListener('mouseenter', Swal.stopTimer);
+              toast.addEventListener('mouseleave', Swal.resumeTimer);
+            },
+          });
+
+          Toast.fire({
+            icon: 'error',
+            title: 'Service Unavailable',
+          });
+          this.isLoading = false;
+        }
+      );
   }
 
   handlePageEvent(e: PageEvent) {
@@ -222,5 +247,6 @@ export class WilayahKelurahanComponent implements OnInit {
 
   ngOnInit(): void {
     this.getKelurahan();
+    this.title.setTitle('Kelurahan');
   }
 }

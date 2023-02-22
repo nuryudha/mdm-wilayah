@@ -24,6 +24,7 @@
             required
             appearance="outline"
             [(ngModel)]="namaKelurahan"
+            maxlength="50"
           />
           <mat-error> Kelurahan is required </mat-error>
         </mat-form-field>
@@ -38,6 +39,7 @@
             maxlength="5"
           />
           <mat-error> Kode Pos is required </mat-error>
+          <mat-error> Input harus lebih dari 5 karakter </mat-error>
         </mat-form-field>
         <mat-form-field
           appearance="outline"
@@ -57,7 +59,7 @@
         </mat-form-field>
         <mat-form-field appearance="outline" style="width: 100%">
           <mat-label>Kabupaten/Kota</mat-label>
-          <mat-select [(ngModel)]="selectIdKabupaten" required>
+          <mat-select [(ngModel)]="selectIdKabupaten" required disabled>
             <mat-option>None</mat-option>
             <mat-option
               *ngFor="let element of dataKabupaten"
@@ -69,7 +71,7 @@
         </mat-form-field>
         <mat-form-field appearance="outline" style="width: 100%">
           <mat-label>Provinsi</mat-label>
-          <mat-select [(ngModel)]="selectIdProvinsi" required>
+          <mat-select [(ngModel)]="selectIdProvinsi" required disabled>
             <mat-option>None</mat-option>
             <mat-option
               *ngFor="let element of dataProvinsi"
@@ -83,7 +85,7 @@
         </mat-form-field>
         <mat-form-field appearance="outline" style="width: 100%">
           <mat-label>Negara</mat-label>
-          <mat-select required [(ngModel)]="selectIdNegara">
+          <mat-select required [(ngModel)]="selectIdNegara" disabled>
             <mat-option>None</mat-option>
             <mat-option
               *ngFor="let element of dataNegara"
