@@ -5,13 +5,30 @@
   <div class="row mt-3">
     <div class="col-12">
       <mat-card class="mb-5 toCenter" style="width: 40%">
-        <mat-form-field appearance="fill" style="width: 100%">
+        <mat-form-field appearance="outline" style="width: 100%">
           <mat-label>ID Negara</mat-label>
-          <input matInput required [(ngModel)]="this.idCountry" />
+          <input
+            matInput
+            appAlfabetOnly
+            oninput="this.value = this.value.toUpperCase()"
+            [(ngModel)]="idCountry"
+            required
+            appearance="outline"
+            maxlength="2"
+          />
+          <mat-error> ID Negara is required </mat-error>
         </mat-form-field>
-        <mat-form-field appearance="fill" style="width: 50%">
+        <mat-form-field appearance="outline" style="width: 50%">
           <mat-label>Nama Negara</mat-label>
-          <input matInput required [(ngModel)]="this.countryNameIdn" />
+          <input
+            matInput
+            appAlfabetOnly
+            oninput="this.value = this.value.toUpperCase()"
+            [(ngModel)]="countryNameIdn"
+            required
+            appearance="outline"
+          />
+          <mat-error>Nama Negara is required</mat-error>
         </mat-form-field>
         <button
           mat-raised-button

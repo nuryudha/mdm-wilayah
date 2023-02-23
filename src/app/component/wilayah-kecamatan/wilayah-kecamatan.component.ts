@@ -32,9 +32,16 @@ export class WilayahKecamatanComponent implements OnInit {
   dataKecamatan: Kecamatan[] = [];
   dataSource!: MatTableDataSource<Kecamatan>;
   pageEvent!: PageEvent;
+  isLoading = false;
+  error = false;
+  statusText: any;
+  noData = false;
 
   getKecamatan() {
+    this.isLoading = true;
+    this.error = false;
     this.dataKecamatan = [];
+    this.dataSource = new MatTableDataSource(this.dataKecamatan);
     this.wilayahService
       .getAll(
         'district/?sort=districtName,asc&page=' +
@@ -42,20 +49,46 @@ export class WilayahKecamatanComponent implements OnInit {
           '&size=' +
           this.pageSize
       )
-      .subscribe((res) => {
-        this.totalRec = res.body.paging.totalrecord;
-        res.body.result.forEach((element: any, index: any) => {
-          this.dataKecamatan.push({
-            no: this.pageIndex * this.pageSize + index + 1 + '.',
-            districtId: element.districtId,
-            districtName: element.districtName,
-            cityName: element.cityName,
-            provinceName: element.provinceName,
-            countryNameIdn: element.countryNameIdn,
+      .subscribe(
+        (res) => {
+          this.totalRec = res.body.paging.totalrecord;
+          res.body.result.forEach((element: any, index: any) => {
+            this.dataKecamatan.push({
+              no: this.pageIndex * this.pageSize + index + 1 + '.',
+              districtId: element.districtId,
+              districtName: element.districtName,
+              cityName: element.cityName,
+              provinceName: element.provinceName,
+              countryNameIdn: element.countryNameIdn,
+            });
           });
-        });
-        this.dataSource = new MatTableDataSource(this.dataKecamatan);
-      });
+          this.isLoading = false;
+          this.error = false;
+          this.dataSource = new MatTableDataSource(this.dataKecamatan);
+        },
+        (error) => {
+          console.log(error);
+          this.statusText = error.statusText;
+          this.isLoading = false;
+          this.error = true;
+          const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+
+            didOpen: (toast) => {
+              toast.addEventListener('mouseenter', Swal.stopTimer);
+              toast.addEventListener('mouseleave', Swal.resumeTimer);
+            },
+          });
+
+          Toast.fire({
+            icon: 'error',
+            title: 'Service Unavailable',
+          });
+        }
+      );
   }
 
   handlePageEvent(e: PageEvent) {
@@ -120,6 +153,7 @@ export class WilayahKecamatanComponent implements OnInit {
               countryNameIdn: element.countryNameIdn,
             });
           });
+          this.noData = true;
           this.dataSource = new MatTableDataSource(this.dataSearchKecamatan);
         });
     }
@@ -156,6 +190,7 @@ export class WilayahKecamatanComponent implements OnInit {
             countryNameIdn: element.countryNameIdn,
           });
         });
+        this.noData = true;
         this.dataSource = new MatTableDataSource(this.dataSearchKecamatan);
       });
   }

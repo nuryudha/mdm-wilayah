@@ -20,6 +20,10 @@ export class WilayahNegaraComponent implements OnInit, AfterViewInit {
   displayedColumns: string[] = ['id', 'countryId', 'countryNameIdn', 'action'];
   dataSource!: MatTableDataSource<Negara>;
   dataNegara: Negara[] = [];
+  isLoading = true;
+  error = false;
+  statusText: any;
+  noData = false;
 
   constructor(
     private wilayahService: WilayahService,
@@ -47,6 +51,9 @@ export class WilayahNegaraComponent implements OnInit, AfterViewInit {
   pageSizeOptions = [10, 20, 100];
 
   getCountry() {
+    this.noData = false;
+    this.isLoading = true;
+    this.error = false;
     console.log(this.pageIndex);
     this.dataNegara = [];
     this.wilayahService
@@ -56,18 +63,44 @@ export class WilayahNegaraComponent implements OnInit, AfterViewInit {
           '&size=' +
           this.pageSize
       )
-      .subscribe((res) => {
-        this.totalRec = res.body.paging.totalrecord;
-        res.body.result.forEach((element: any, index: any) => {
-          this.dataNegara.push({
-            no: this.pageIndex * this.pageSize + index + 1 + '.',
-            countryId: element.countryId,
-            countryNameIdn: element.countryNameIdn,
+      .subscribe(
+        (res) => {
+          this.totalRec = res.body.paging.totalrecord;
+          res.body.result.forEach((element: any, index: any) => {
+            this.dataNegara.push({
+              no: this.pageIndex * this.pageSize + index + 1 + '.',
+              countryId: element.countryId,
+              countryNameIdn: element.countryNameIdn,
+            });
           });
-        });
-        this.dataSource = new MatTableDataSource(this.dataNegara);
-        this.ngAfterViewInit();
-      });
+          this.isLoading = false;
+          this.error = false;
+          this.dataSource = new MatTableDataSource(this.dataNegara);
+          this.ngAfterViewInit();
+        },
+        (error) => {
+          console.log(error);
+          this.statusText = error.statusText;
+          this.isLoading = false;
+          this.error = true;
+          const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+
+            didOpen: (toast) => {
+              toast.addEventListener('mouseenter', Swal.stopTimer);
+              toast.addEventListener('mouseleave', Swal.resumeTimer);
+            },
+          });
+
+          Toast.fire({
+            icon: 'error',
+            title: 'Service Unavailable',
+          });
+        }
+      );
   }
   ngAfterViewInit() {
     this.dataSource.sort = this.sort;
@@ -75,6 +108,7 @@ export class WilayahNegaraComponent implements OnInit, AfterViewInit {
   }
   pageEvent!: PageEvent;
   handlePageEvent(e: PageEvent) {
+    this.isLoading = true;
     this.pageEvent = e;
     this.pageSize = e.pageSize;
     this.pageIndex = e.pageIndex;
@@ -108,6 +142,8 @@ export class WilayahNegaraComponent implements OnInit, AfterViewInit {
                 countryNameIdn: element.countryNameIdn,
               });
             });
+            this.noData = false;
+            this.isLoading = false;
             this.dataSource = new MatTableDataSource(this.dataNegara);
             // this.ngAfterViewInit();
           });
@@ -134,6 +170,8 @@ export class WilayahNegaraComponent implements OnInit, AfterViewInit {
                 countryNameIdn: element.countryNameIdn,
               });
             });
+            this.isLoading = false;
+            this.noData = false;
             this.dataSource = new MatTableDataSource(this.dataSearchNegara);
             this.ngAfterViewInit();
           });
@@ -161,6 +199,8 @@ export class WilayahNegaraComponent implements OnInit, AfterViewInit {
                 countryNameIdn: element.countryNameIdn,
               });
             });
+            this.noData = false;
+            this.isLoading = false;
             this.dataSource = new MatTableDataSource(this.dataNegara);
             // this.ngAfterViewInit();
           });
@@ -187,6 +227,8 @@ export class WilayahNegaraComponent implements OnInit, AfterViewInit {
                 countryNameIdn: element.countryNameIdn,
               });
             });
+            this.isLoading = false;
+            this.noData = false;
             this.dataSource = new MatTableDataSource(this.dataSearchNegara);
             this.ngAfterViewInit();
           });
@@ -197,6 +239,7 @@ export class WilayahNegaraComponent implements OnInit, AfterViewInit {
   searchData: any;
   dataSearchNegara: Negara[] = [];
   searchNegara() {
+    this.isLoading = true;
     this.dataSearchNegara = [];
     this.pageIndex = 0;
     this.wilayahService
@@ -220,12 +263,15 @@ export class WilayahNegaraComponent implements OnInit, AfterViewInit {
             countryNameIdn: element.countryNameIdn,
           });
         });
+        this.isLoading = false;
+        this.noData = true;
         this.dataSource = new MatTableDataSource(this.dataSearchNegara);
         this.ngAfterViewInit();
       });
   }
 
   deleteNegara(dataCountry: any) {
+    this.noData = false;
     let idCountry = dataCountry.countryId;
     console.log(idCountry);
     Swal.fire({
@@ -238,16 +284,16 @@ export class WilayahNegaraComponent implements OnInit, AfterViewInit {
       confirmButtonText: 'Yes, delete it!',
     }).then((result) => {
       if (result.isConfirmed) {
-        this.wilayahService
-          .deleteAll('country/' + idCountry)
-          .subscribe((res) => {
+        this.wilayahService.deleteAll('country/' + idCountry).subscribe(
+          (res) => {
             console.log(res);
             let statusCode = res.body.status.responseCode;
+            let statusDesc = res.body.status.responseDesc;
             if (statusCode == '200') {
               Swal.fire({
                 position: 'center',
                 icon: 'success',
-                title: 'Berhasil',
+                title: statusDesc,
                 showConfirmButton: false,
                 timer: 1500,
               }).then((res) => {
@@ -257,17 +303,28 @@ export class WilayahNegaraComponent implements OnInit, AfterViewInit {
               Swal.fire({
                 position: 'center',
                 icon: 'error',
-                title: 'Gagal',
+                title: statusDesc,
                 showConfirmButton: false,
                 timer: 1500,
               });
             }
-          });
+          },
+          (error) => {
+            Swal.fire({
+              position: 'center',
+              icon: 'error',
+              title: 'Service Unavailable',
+              showConfirmButton: false,
+              timer: 1500,
+            });
+          }
+        );
       }
     });
   }
 
   coba() {
+    this.noData = false;
     if (this.sort.direction === 'desc') {
       this.dataNegara = [];
       this.wilayahService

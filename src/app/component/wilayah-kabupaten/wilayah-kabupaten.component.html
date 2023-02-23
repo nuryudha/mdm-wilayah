@@ -45,6 +45,7 @@
           <div class="mt-3">
             <button
               (click)="searchKabupaten()"
+              color="primary"
               style="height: 50px; color: white"
               class="btn btn-warning mr-3 ml-1"
             >
@@ -152,8 +153,28 @@
 
                 <tr class="mat-row" *matNoDataRow>
                   <td
-                    class="mat-cell text-center fs-5 custom-nodata-ontable"
+                    class="mat-cell text-center fs-5"
                     colspan="8"
+                    *ngIf="isLoading"
+                  >
+                    <mat-spinner class="container mt-5 mb-5"></mat-spinner>
+                  </td>
+                  <td class="" colspan="9" *ngIf="error">
+                    <div class="alert alert-danger" role="alert">
+                      <i class="fas fa-exclamation-circle mr-2"></i>
+                      <strong>Error!</strong>
+                      Service Unavailable
+                      <i
+                        class="fas fa-redo-alt ml-3"
+                        (click)="getKabupaten()"
+                        style="cursor: pointer"
+                      ></i>
+                    </div>
+                  </td>
+                  <td
+                    class="mat-cell text-center fs-5"
+                    colspan="8"
+                    *ngIf="noData"
                   >
                     No Data Available!
                   </td>
@@ -176,7 +197,6 @@
                 [pageSizeOptions]="pageSizeOptions"
                 aria-label="Select page"
               >
-                <!-- (page)="handlePageEvent($event)" -->
               </mat-paginator>
             </div>
           </div>

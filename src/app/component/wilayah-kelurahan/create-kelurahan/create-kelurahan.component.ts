@@ -41,12 +41,25 @@ export class CreateKelurahanComponent implements OnInit {
   dataKabupaten: Kabupaten[] = [];
   dataSourceKabupaten!: MatTableDataSource<Kabupaten>;
   formValidasi!: FormGroup;
+  statusText: any;
+  error = false;
 
   getCountry() {
-    this.wilayahService.getAll('country/?page=1&size=1000').subscribe((res) => {
-      this.dataNegara = res.body.result;
-      this.dataSourceNegara = new MatTableDataSource(this.dataNegara);
-    });
+    this.wilayahService.getAll('country/?page=1&size=1000').subscribe(
+      (res) => {
+        this.dataNegara = res.body.result;
+        this.dataSourceNegara = new MatTableDataSource(this.dataNegara);
+      },
+      (error) => {
+        console.log(error);
+        this.statusText = error.statusText;
+        this.error = true;
+        Swal.fire({
+          icon: 'error',
+          title: 'Service Unavailable',
+        });
+      }
+    );
   }
 
   getProvinsi() {
@@ -94,39 +107,63 @@ export class CreateKelurahanComponent implements OnInit {
       villagePostalCode: this.kodePos,
     };
     console.log(parameter);
-    this.wilayahService.postAll('village', parameter).subscribe((res) => {
-      let statusCode = res.body.status.responseCode;
-      let statusDesc = res.body.status.responseDesc;
-      if (statusCode == '200') {
-        Swal.fire({
-          position: 'center',
-          icon: 'success',
-          title: statusDesc,
-          showConfirmButton: false,
-          timer: 1500,
-        }).then((res) => {
-          if (res) {
-            this.router.navigate(['/wilayah-kelurahan']);
-          }
-        });
-      } else if (statusDesc.toLowerCase().includes('already exist')) {
-        Swal.fire({
-          position: 'center',
-          icon: 'error',
-          title: statusDesc,
-          showConfirmButton: false,
-          timer: 1500,
-        });
-      } else {
-        Swal.fire({
-          position: 'center',
-          icon: 'error',
-          title: 'Service Not Found',
-          showConfirmButton: false,
-          timer: 1500,
-        });
+    this.wilayahService.postAll('village', parameter).subscribe(
+      (res) => {
+        let statusCode = res.body.status.responseCode;
+        let statusDesc = res.body.status.responseDesc;
+        if (statusCode == '200') {
+          Swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: statusDesc,
+            showConfirmButton: false,
+            timer: 1500,
+          }).then((res) => {
+            if (res) {
+              this.router.navigate(['/wilayah-kelurahan']);
+            }
+          });
+        } else if (statusDesc.toLowerCase().includes('already exist')) {
+          Swal.fire({
+            position: 'center',
+            icon: 'error',
+            title: statusDesc,
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        } else {
+          Swal.fire({
+            position: 'center',
+            icon: 'error',
+            title: 'Service Not Found',
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        }
+      },
+      (error) => {
+        console.log(error.status);
+        if (error.status == '400') {
+        } else {
+          const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+
+            didOpen: (toast) => {
+              toast.addEventListener('mouseenter', Swal.stopTimer);
+              toast.addEventListener('mouseleave', Swal.resumeTimer);
+            },
+          });
+
+          Toast.fire({
+            icon: 'error',
+            title: 'Service Unavailable',
+          });
+        }
       }
-    });
+    );
   }
   cekValidasi() {
     this.formValidasi = this.formBuilder.group({

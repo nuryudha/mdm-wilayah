@@ -28,14 +28,27 @@ export class DialogCreateComponent implements OnInit {
       namaNegara: ['', [Validators.required]],
     });
   }
+
+  getCountry() {
+    this.wilayahService.getAll('country/?page=1&size=1000').subscribe(
+      (res) => {},
+      (error) => {
+        console.log(error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Service Unavailable',
+        });
+      }
+    );
+  }
   createNegara() {
-    if (this.formValidasi.valid) {
-      let parameter = {
-        countryId: this.idNegara,
-        countryNameIdn: this.namaNegara,
-      };
-      console.log(parameter);
-      this.wilayahService.postAll('country', parameter).subscribe((res) => {
+    let parameter = {
+      countryId: this.idNegara,
+      countryNameIdn: this.namaNegara,
+    };
+    console.log(parameter);
+    this.wilayahService.postAll('country', parameter).subscribe(
+      (res) => {
         let statusCode = res.body.status.responseCode;
         let statusDesc = res.body.status.responseDesc;
         console.log(res);
@@ -68,13 +81,34 @@ export class DialogCreateComponent implements OnInit {
             timer: 1500,
           });
         }
-      });
-    } else {
-      return;
-    }
+      },
+      (error) => {
+        console.log(error.status);
+        if (error.status == '400') {
+        } else {
+          const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+
+            didOpen: (toast) => {
+              toast.addEventListener('mouseenter', Swal.stopTimer);
+              toast.addEventListener('mouseleave', Swal.resumeTimer);
+            },
+          });
+
+          Toast.fire({
+            icon: 'error',
+            title: 'Service Unavailable',
+          });
+        }
+      }
+    );
   }
 
   ngOnInit(): void {
     this.title.setTitle('Buat Negara');
+    this.getCountry();
   }
 }

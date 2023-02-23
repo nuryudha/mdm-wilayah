@@ -4,6 +4,7 @@ import { WilayahService } from '../../wilayah.service';
 import { DataKabupaten } from 'src/app/model/kabupatenModel';
 import { PageEvent } from '@angular/material/paginator';
 import { MatDialogRef } from '@angular/material/dialog';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-data-kabupaten',
@@ -26,9 +27,16 @@ export class DataKabupatenComponent implements OnInit {
   pageEvent!: PageEvent;
   searchData: any;
   dataSearchKabupaten: any;
+  isLoading = false;
+  error = false;
+  statusText: any;
+  noData = false;
 
   getKabupaten() {
+    this.isLoading = true;
+    this.error = false;
     this.dataKabupaten = [];
+    this.dataSource = new MatTableDataSource(this.dataKabupaten);
     this.wilayahService
       .getAll(
         'city/?sort=cityName,asc&page=' +
@@ -36,22 +44,48 @@ export class DataKabupatenComponent implements OnInit {
           '&size=' +
           this.pageSize
       )
-      .subscribe((res) => {
-        console.log(res);
-        this.totalRec = res.body.paging.totalrecord;
-        res.body.result.forEach((element: any, index: any) => {
-          this.dataKabupaten.push({
-            no: this.pageIndex * this.pageSize + index + 1 + '.',
-            cityId: element.cityId,
-            cityName: element.cityName,
-            provinceName: element.provinceName,
-            countryNameIdn: element.countryNameIdn,
-            countryId: element.countryId,
-            provinceId: element.provinceId,
+      .subscribe(
+        (res) => {
+          console.log(res);
+          this.totalRec = res.body.paging.totalrecord;
+          res.body.result.forEach((element: any, index: any) => {
+            this.dataKabupaten.push({
+              no: this.pageIndex * this.pageSize + index + 1 + '.',
+              cityId: element.cityId,
+              cityName: element.cityName,
+              provinceName: element.provinceName,
+              countryNameIdn: element.countryNameIdn,
+              countryId: element.countryId,
+              provinceId: element.provinceId,
+            });
           });
-        });
-        this.dataSource = new MatTableDataSource(this.dataKabupaten);
-      });
+          this.isLoading = false;
+          this.error = false;
+          this.dataSource = new MatTableDataSource(this.dataKabupaten);
+        },
+        (error) => {
+          console.log(error);
+          this.statusText = error.statusText;
+          this.isLoading = false;
+          this.error = true;
+          const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+
+            didOpen: (toast) => {
+              toast.addEventListener('mouseenter', Swal.stopTimer);
+              toast.addEventListener('mouseleave', Swal.resumeTimer);
+            },
+          });
+
+          Toast.fire({
+            icon: 'error',
+            title: 'Service Unavailable',
+          });
+        }
+      );
   }
 
   handlePageEvent(e: PageEvent) {
@@ -88,6 +122,7 @@ export class DataKabupatenComponent implements OnInit {
           this.dataSource = new MatTableDataSource(this.dataKabupaten);
         });
     } else {
+      this.noData = true;
       this.dataSearchKabupaten = [];
       this.wilayahService
         .getAll(
@@ -123,6 +158,7 @@ export class DataKabupatenComponent implements OnInit {
   }
 
   searchKabupaten() {
+    this.noData = true;
     this.pageIndex = 0;
     this.dataSearchKabupaten = [];
     this.wilayahService

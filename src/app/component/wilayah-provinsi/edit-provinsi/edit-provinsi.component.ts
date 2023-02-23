@@ -27,12 +27,25 @@ export class EditProvinsiComponent implements OnInit {
   formValidasi!: FormGroup;
   id: any;
   idProvinsi: any;
+  statusText: any;
+  error = false;
 
   getCountry() {
-    this.wilayahService.getAll('country/?page=1&size=1000').subscribe((res) => {
-      this.dataNegara = res.body.result;
-      this.dataSource = new MatTableDataSource(this.dataNegara);
-    });
+    this.wilayahService.getAll('country/?page=1&size=1000').subscribe(
+      (res) => {
+        this.dataNegara = res.body.result;
+        this.dataSource = new MatTableDataSource(this.dataNegara);
+      },
+      (error) => {
+        console.log(error);
+        this.statusText = error.statusText;
+        this.error = true;
+        Swal.fire({
+          icon: 'error',
+          title: 'Service Unavailable',
+        });
+      }
+    );
   }
 
   getIdProvinsi() {
@@ -50,31 +63,55 @@ export class EditProvinsiComponent implements OnInit {
       provinceId: this.idProvinsi,
     };
     console.log(parameter);
-    this.wilayahService.putId('province/', parameter).subscribe((res) => {
-      console.log(res);
-      let statusCode = res.body.status.responseCode;
-      if (statusCode == '200') {
-        Swal.fire({
-          position: 'center',
-          icon: 'success',
-          title: 'Berhasil',
-          showConfirmButton: false,
-          timer: 1500,
-        }).then((res) => {
-          if (res) {
-            this.router.navigate(['/wilayah-provinsi']);
-          }
-        });
-      } else {
-        Swal.fire({
-          position: 'center',
-          icon: 'error',
-          title: 'Gagal',
-          showConfirmButton: false,
-          timer: 1500,
-        });
+    this.wilayahService.putId('province/', parameter).subscribe(
+      (res) => {
+        console.log(res);
+        let statusCode = res.body.status.responseCode;
+        if (statusCode == '200') {
+          Swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: 'Berhasil',
+            showConfirmButton: false,
+            timer: 1500,
+          }).then((res) => {
+            if (res) {
+              this.router.navigate(['/wilayah-provinsi']);
+            }
+          });
+        } else {
+          Swal.fire({
+            position: 'center',
+            icon: 'error',
+            title: 'Gagal',
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        }
+      },
+      (error) => {
+        console.log(error.status);
+        if (error.status == '400') {
+        } else {
+          const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+
+            didOpen: (toast) => {
+              toast.addEventListener('mouseenter', Swal.stopTimer);
+              toast.addEventListener('mouseleave', Swal.resumeTimer);
+            },
+          });
+
+          Toast.fire({
+            icon: 'error',
+            title: 'Service Unavailable',
+          });
+        }
       }
-    });
+    );
   }
 
   ngOnInit(): void {

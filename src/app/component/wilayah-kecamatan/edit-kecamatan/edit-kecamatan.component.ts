@@ -36,12 +36,25 @@ export class EditKecamatanComponent implements OnInit {
   selectNameNegara: any;
   selectIdNegara: any;
   id: any;
+  statusText: any;
+  error = false;
 
   getCountry() {
-    this.wilayahService.getAll('country/?page=1&size=1000').subscribe((res) => {
-      this.dataNegara = res.body.result;
-      this.dataSourceNegara = new MatTableDataSource(this.dataNegara);
-    });
+    this.wilayahService.getAll('country/?page=1&size=1000').subscribe(
+      (res) => {
+        this.dataNegara = res.body.result;
+        this.dataSourceNegara = new MatTableDataSource(this.dataNegara);
+      },
+      (error) => {
+        console.log(error);
+        this.statusText = error.statusText;
+        this.error = true;
+        Swal.fire({
+          icon: 'error',
+          title: 'Service Unavailable',
+        });
+      }
+    );
   }
 
   getProvinsi() {
@@ -96,40 +109,61 @@ export class EditKecamatanComponent implements OnInit {
       countryId: this.selectIdNegara,
     };
     console.log(parameter);
-    this.wilayahService.putId('district', parameter).subscribe((res) => {
-      console.log(res);
-      let statusCode = res.body.status.responseCode;
-      let statusDesc = res.body.status.responseDesc;
-      if (statusCode == '200') {
-        Swal.fire({
-          position: 'center',
-          icon: 'success',
-          title: statusDesc,
+    this.wilayahService.putId('district', parameter).subscribe(
+      (res) => {
+        console.log(res);
+        let statusCode = res.body.status.responseCode;
+        let statusDesc = res.body.status.responseDesc;
+        if (statusCode == '200') {
+          Swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: statusDesc,
+            showConfirmButton: false,
+            timer: 1500,
+          }).then((res) => {
+            if (res) {
+              this.router.navigate(['/wilayah-kecamatan']);
+            }
+          });
+        } else if (statusCode == '400') {
+          Swal.fire({
+            position: 'center',
+            icon: 'error',
+            title: statusDesc,
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        } else {
+          Swal.fire({
+            position: 'center',
+            icon: 'error',
+            title: 'Service Not Found',
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        }
+      },
+      (error) => {
+        console.log(error);
+        const Toast = Swal.mixin({
+          toast: true,
+          position: 'top-end',
           showConfirmButton: false,
-          timer: 1500,
-        }).then((res) => {
-          if (res) {
-            this.router.navigate(['/wilayah-kecamatan']);
-          }
+          timer: 3000,
+
+          didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer);
+            toast.addEventListener('mouseleave', Swal.resumeTimer);
+          },
         });
-      } else if (statusCode == '400') {
-        Swal.fire({
-          position: 'center',
+
+        Toast.fire({
           icon: 'error',
-          title: statusDesc,
-          showConfirmButton: false,
-          timer: 1500,
-        });
-      } else {
-        Swal.fire({
-          position: 'center',
-          icon: 'error',
-          title: 'Service Not Found',
-          showConfirmButton: false,
-          timer: 1500,
+          title: 'Service Unavailable',
         });
       }
-    });
+    );
   }
 
   ngOnInit(): void {

@@ -39,6 +39,10 @@ export class WilayahProvinsiComponent implements OnInit {
   pageEvent!: PageEvent;
   searchData: any;
   dataSearchProvinsi: Provinsi[] = [];
+  isLoading = true;
+  error = false;
+  statusText: any;
+  noData = false;
 
   @ViewChild('paginator')
   paginator!: MatPaginator;
@@ -52,6 +56,9 @@ export class WilayahProvinsiComponent implements OnInit {
   }
 
   getProvince() {
+    this.noData = false;
+    this.isLoading = true;
+    this.error = false;
     this.dataProvinsi = [];
     this.dataSource = new MatTableDataSource(this.dataProvinsi);
     this.wilayahService
@@ -61,23 +68,50 @@ export class WilayahProvinsiComponent implements OnInit {
           '&size=' +
           this.pageSize
       )
-      .subscribe((res) => {
-        this.totalRec = res.body.paging.totalrecord;
-        res.body.result.forEach((element: any, index: any) => {
-          this.dataProvinsi.push({
-            no: this.pageIndex * this.pageSize + index + 1 + '.',
-            countryNameIdn: element.countryNameIdn,
-            countryId: element.countryId,
-            provinceId: element.provinceId,
-            provinceName: element.provinceName,
+      .subscribe(
+        (res) => {
+          this.totalRec = res.body.paging.totalrecord;
+          res.body.result.forEach((element: any, index: any) => {
+            this.dataProvinsi.push({
+              no: this.pageIndex * this.pageSize + index + 1 + '.',
+              countryNameIdn: element.countryNameIdn,
+              countryId: element.countryId,
+              provinceId: element.provinceId,
+              provinceName: element.provinceName,
+            });
           });
-        });
-        this.dataSource = new MatTableDataSource(this.dataProvinsi);
-        this.ngAfterViewInit();
-      });
+          this.isLoading = false;
+          this.error = false;
+          this.dataSource = new MatTableDataSource(this.dataProvinsi);
+        },
+        (error) => {
+          console.log(error);
+          this.statusText = error.statusText;
+          this.isLoading = false;
+          this.error = true;
+          const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+
+            didOpen: (toast) => {
+              toast.addEventListener('mouseenter', Swal.stopTimer);
+              toast.addEventListener('mouseleave', Swal.resumeTimer);
+            },
+          });
+
+          Toast.fire({
+            icon: 'error',
+            title: 'Service Unavailable',
+          });
+        }
+      );
   }
 
   handlePageEvent(e: PageEvent) {
+    this.isLoading = true;
+    this.noData = false;
     this.pageEvent = e;
     this.pageSize = e.pageSize;
     this.pageIndex = e.pageIndex;
@@ -111,6 +145,7 @@ export class WilayahProvinsiComponent implements OnInit {
               provinceName: element.provinceName,
             });
           });
+          this.isLoading = false;
           this.dataSource = new MatTableDataSource(this.dataSearchProvinsi);
           this.ngAfterViewInit();
         });
@@ -136,6 +171,8 @@ export class WilayahProvinsiComponent implements OnInit {
               provinceName: element.provinceName,
             });
           });
+          this.isLoading = false;
+
           this.dataSource = new MatTableDataSource(this.dataProvinsi);
           this.ngAfterViewInit();
         });
@@ -143,6 +180,8 @@ export class WilayahProvinsiComponent implements OnInit {
   }
 
   searchProvinsi() {
+    this.isLoading = true;
+    this.noData = true;
     this.pageIndex = 0;
     this.dataSearchProvinsi = [];
     this.wilayahService
@@ -169,6 +208,8 @@ export class WilayahProvinsiComponent implements OnInit {
             provinceName: element.provinceName,
           });
         });
+        this.isLoading = false;
+        this.noData = true;
         this.dataSource = new MatTableDataSource(this.dataSearchProvinsi);
         this.ngAfterViewInit();
       });
@@ -185,6 +226,7 @@ export class WilayahProvinsiComponent implements OnInit {
   }
 
   deleteProvinsi(dataProvinsi: any) {
+    this.noData = false;
     let provinceId = dataProvinsi.provinceId;
     console.log(provinceId);
     Swal.fire({
@@ -197,15 +239,15 @@ export class WilayahProvinsiComponent implements OnInit {
       confirmButtonText: 'Yes, delete it!',
     }).then((res) => {
       if (res.isConfirmed) {
-        this.wilayahService
-          .deleteAll('province/' + provinceId)
-          .subscribe((res) => {
+        this.wilayahService.deleteAll('province/' + provinceId).subscribe(
+          (res) => {
             let statusCode = res.body.status.responseCode;
+            let statusDesc = res.body.status.responseDesc;
             if (statusCode == '200') {
               Swal.fire({
                 position: 'center',
                 icon: 'success',
-                title: 'Berhasil',
+                title: statusDesc,
                 showConfirmButton: false,
                 timer: 1500,
               }).then((res) => {
@@ -215,12 +257,22 @@ export class WilayahProvinsiComponent implements OnInit {
               Swal.fire({
                 position: 'center',
                 icon: 'error',
-                title: 'Gagal',
+                title: statusDesc,
                 showConfirmButton: false,
                 timer: 1500,
               });
             }
-          });
+          },
+          (error) => {
+            Swal.fire({
+              position: 'center',
+              icon: 'error',
+              title: 'Service Unavailable',
+              showConfirmButton: false,
+              timer: 1500,
+            });
+          }
+        );
       }
     });
   }

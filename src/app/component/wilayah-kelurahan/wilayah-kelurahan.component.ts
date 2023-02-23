@@ -5,6 +5,7 @@ import { Keluarahan } from 'src/app/model/kelurahanModel';
 import { PageEvent } from '@angular/material/paginator';
 import Swal from 'sweetalert2';
 import { Title } from '@angular/platform-browser';
+
 @Component({
   selector: 'app-wilayah-kelurahan',
   templateUrl: './wilayah-kelurahan.component.html',
@@ -33,10 +34,14 @@ export class WilayahKelurahanComponent implements OnInit {
   dataKeluarahan: Keluarahan[] = [];
   dataSource!: MatTableDataSource<Keluarahan>;
   dataSearchKeluarahan: any;
-  isLoading = false;
+  isLoading = true;
+  error = false;
+  statusText: any;
+  noData = false;
 
   getKelurahan() {
     this.isLoading = true;
+    this.error = false;
     this.dataKeluarahan = [];
     this.dataSource = new MatTableDataSource(this.dataKeluarahan);
     this.wilayahService
@@ -50,7 +55,6 @@ export class WilayahKelurahanComponent implements OnInit {
         (res) => {
           this.totalRec = res.body.paging.totalrecord;
           res.body.result.forEach((element: any, index: any) => {
-            this.isLoading = false;
             this.dataKeluarahan.push({
               no: this.pageIndex * this.pageSize + index + 1 + '.',
               villageId: element.villageId,
@@ -62,10 +66,15 @@ export class WilayahKelurahanComponent implements OnInit {
               countryNameIdn: element.countryNameIdn,
             });
           });
+          this.isLoading = false;
+          this.error = false;
           this.dataSource = new MatTableDataSource(this.dataKeluarahan);
         },
         (error) => {
           console.log(error);
+          this.statusText = error.statusText;
+          this.isLoading = false;
+          this.error = true;
           const Toast = Swal.mixin({
             toast: true,
             position: 'top-end',
@@ -82,12 +91,12 @@ export class WilayahKelurahanComponent implements OnInit {
             icon: 'error',
             title: 'Service Unavailable',
           });
-          this.isLoading = false;
         }
       );
   }
 
   handlePageEvent(e: PageEvent) {
+    this.isLoading = true;
     this.pageEvent = e;
     this.pageSize = e.pageSize;
     this.pageIndex = e.pageIndex;
@@ -118,6 +127,7 @@ export class WilayahKelurahanComponent implements OnInit {
               countryNameIdn: element.countryNameIdn,
             });
           });
+          this.isLoading = false;
           this.dataSource = new MatTableDataSource(this.dataKeluarahan);
         });
     } else {
@@ -157,12 +167,15 @@ export class WilayahKelurahanComponent implements OnInit {
               countryNameIdn: element.countryNameIdn,
             });
           });
+          this.isLoading = false;
+          this.noData = true;
           this.dataSource = new MatTableDataSource(this.dataSearchKeluarahan);
         });
     }
   }
 
   searchKelurahan() {
+    this.isLoading = true;
     this.pageIndex = 0;
     this.dataSearchKeluarahan = [];
     this.wilayahService
@@ -200,6 +213,8 @@ export class WilayahKelurahanComponent implements OnInit {
             countryNameIdn: element.countryNameIdn,
           });
         });
+        this.isLoading = false;
+        this.noData = true;
         this.dataSource = new MatTableDataSource(this.dataSearchKeluarahan);
       });
   }
@@ -215,34 +230,55 @@ export class WilayahKelurahanComponent implements OnInit {
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
       confirmButtonText: 'Yes, delete it!',
-    }).then((res) => {
-      if (res.isConfirmed) {
-        this.wilayahService
-          .deleteAll('village/' + kelurahanId)
-          .subscribe((res) => {
-            let statusCode = res.body.status.responseCode;
-            if (statusCode == '200') {
-              Swal.fire({
-                position: 'center',
-                icon: 'success',
-                title: 'Berhasil',
-                showConfirmButton: false,
-                timer: 1500,
-              }).then((res) => {
-                if (res) this.getKelurahan();
-              });
-            } else {
+    }).then(
+      (res) => {
+        if (res.isConfirmed) {
+          this.wilayahService.deleteAll('village/' + kelurahanId).subscribe(
+            (res) => {
+              let statusCode = res.body.status.responseCode;
+              let statusDesc = res.body.status.responseDesc;
+              if (statusCode == '200') {
+                Swal.fire({
+                  position: 'center',
+                  icon: 'success',
+                  title: statusDesc,
+                  showConfirmButton: false,
+                  timer: 1500,
+                }).then((res) => {
+                  if (res) this.getKelurahan();
+                });
+              } else {
+                Swal.fire({
+                  position: 'center',
+                  icon: 'error',
+                  title: statusDesc,
+                  showConfirmButton: false,
+                  timer: 1500,
+                });
+              }
+            },
+            (error) => {
               Swal.fire({
                 position: 'center',
                 icon: 'error',
-                title: 'Gagal',
+                title: 'Service Unavailable',
                 showConfirmButton: false,
                 timer: 1500,
               });
             }
-          });
+          );
+        }
+      },
+      (error) => {
+        Swal.fire({
+          position: 'center',
+          icon: 'error',
+          title: 'Service Unavailable',
+          showConfirmButton: false,
+          timer: 1500,
+        });
       }
-    });
+    );
   }
 
   ngOnInit(): void {

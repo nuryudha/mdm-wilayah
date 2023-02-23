@@ -19,11 +19,7 @@
               appearance="outline"
               maxlength="2"
             />
-            <mat-error
-              *ngIf="formValidasi.controls.idNegara.hasError('required')"
-            >
-              ID Negara is required
-            </mat-error>
+            <mat-error> ID Negara is required </mat-error>
           </mat-form-field>
           <mat-form-field appearance="outline" style="width: 50%">
             <mat-label>Nama Negara</mat-label>
@@ -37,10 +33,7 @@
               required
               appearance="outline"
             />
-            <mat-error
-              *ngIf="formValidasi.controls.namaNegara.hasError('required')"
-              >Nama Negara is required</mat-error
-            >
+            <mat-error>Nama Negara is required</mat-error>
           </mat-form-field>
           <button mat-raised-button color="primary" class="mx-3">Save</button>
           <button mat-raised-button routerLink="/wilayah-negara">Cancel</button>

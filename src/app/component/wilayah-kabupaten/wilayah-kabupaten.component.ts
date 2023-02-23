@@ -31,9 +31,16 @@ export class WilayahKabupatenComponent implements OnInit {
   dataKabupaten: Kabupaten[] = [];
   dataSource!: MatTableDataSource<Kabupaten>;
   pageEvent!: PageEvent;
+  isLoading = true;
+  error = false;
+  statusText: any;
+  noData = false;
 
   getKabupaten() {
+    this.isLoading = true;
+    this.error = false;
     this.dataKabupaten = [];
+    this.dataSource = new MatTableDataSource(this.dataKabupaten);
     this.wilayahService
       .getAll(
         'city/?sort=cityName,asc&page=' +
@@ -41,19 +48,45 @@ export class WilayahKabupatenComponent implements OnInit {
           '&size=' +
           this.pageSize
       )
-      .subscribe((res) => {
-        this.totalRec = res.body.paging.totalrecord;
-        res.body.result.forEach((element: any, index: any) => {
-          this.dataKabupaten.push({
-            no: this.pageIndex * this.pageSize + index + 1 + '.',
-            cityId: element.cityId,
-            cityName: element.cityName,
-            provinceName: element.provinceName,
-            countryNameIdn: element.countryNameIdn,
+      .subscribe(
+        (res) => {
+          this.totalRec = res.body.paging.totalrecord;
+          res.body.result.forEach((element: any, index: any) => {
+            this.dataKabupaten.push({
+              no: this.pageIndex * this.pageSize + index + 1 + '.',
+              cityId: element.cityId,
+              cityName: element.cityName,
+              provinceName: element.provinceName,
+              countryNameIdn: element.countryNameIdn,
+            });
           });
-        });
-        this.dataSource = new MatTableDataSource(this.dataKabupaten);
-      });
+          this.isLoading = false;
+          this.error = false;
+          this.dataSource = new MatTableDataSource(this.dataKabupaten);
+        },
+        (error) => {
+          console.log(error);
+          this.statusText = error.statusText;
+          this.isLoading = false;
+          this.error = true;
+          const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+
+            didOpen: (toast) => {
+              toast.addEventListener('mouseenter', Swal.stopTimer);
+              toast.addEventListener('mouseleave', Swal.resumeTimer);
+            },
+          });
+
+          Toast.fire({
+            icon: 'error',
+            title: 'Service Unavailable',
+          });
+        }
+      );
   }
 
   handlePageEvent(e: PageEvent) {
@@ -115,6 +148,7 @@ export class WilayahKabupatenComponent implements OnInit {
               countryNameIdn: element.countryNameIdn,
             });
           });
+          this.noData = true;
           this.dataSource = new MatTableDataSource(this.dataSearchKabupaten);
         });
     }
@@ -149,6 +183,7 @@ export class WilayahKabupatenComponent implements OnInit {
             countryNameIdn: element.countryNameIdn,
           });
         });
+        this.noData = true;
         this.dataSource = new MatTableDataSource(this.dataSearchKabupaten);
       });
   }
@@ -166,9 +201,8 @@ export class WilayahKabupatenComponent implements OnInit {
       confirmButtonText: 'Yes, delete it!',
     }).then((res) => {
       if (res.isConfirmed) {
-        this.wilayahService
-          .deleteAll('city/' + kabupatenId)
-          .subscribe((res) => {
+        this.wilayahService.deleteAll('city/' + kabupatenId).subscribe(
+          (res) => {
             let statusCode = res.body.status.responseCode;
             if (statusCode == '200') {
               Swal.fire({
@@ -189,7 +223,17 @@ export class WilayahKabupatenComponent implements OnInit {
                 timer: 1500,
               });
             }
-          });
+          },
+          (error) => {
+            Swal.fire({
+              position: 'center',
+              icon: 'error',
+              title: 'Service Unavailable',
+              showConfirmButton: false,
+              timer: 1500,
+            });
+          }
+        );
       }
     });
   }

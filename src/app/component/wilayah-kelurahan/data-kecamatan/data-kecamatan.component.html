@@ -109,10 +109,22 @@
         </ng-container>
 
         <tr class="mat-row" *matNoDataRow>
-          <td
-            class="mat-cell text-center fs-5 custom-nodata-ontable"
-            colspan="8"
-          >
+          <td class="mat-cell text-center fs-5" colspan="8" *ngIf="isLoading">
+            <mat-spinner class="container mt-5 mb-5"></mat-spinner>
+          </td>
+          <td class="" colspan="9" *ngIf="error">
+            <div class="alert alert-danger" role="alert">
+              <i class="fas fa-exclamation-circle mr-2"></i>
+              <strong>Error!</strong>
+              Service Unavailable
+              <i
+                class="fas fa-redo-alt ml-3"
+                (click)="getKecamatan()"
+                style="cursor: pointer"
+              ></i>
+            </div>
+          </td>
+          <td class="mat-cell text-center fs-5" colspan="8" *ngIf="noData">
             No Data Available!
           </td>
         </tr>

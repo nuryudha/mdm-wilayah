@@ -4,6 +4,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { DataKecamatan } from 'src/app/model/kecamatanModel';
 import { WilayahService } from '../../wilayah.service';
 import { MatDialogRef } from '@angular/material/dialog';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-data-kecamatan',
@@ -31,9 +32,16 @@ export class DataKecamatanComponent implements OnInit {
   dataSearchKecamatan: any;
   dataSource!: MatTableDataSource<DataKecamatan>;
   dataKecamatan: DataKecamatan[] = [];
+  isLoading = false;
+  error = false;
+  statusText: any;
+  noData = false;
 
   getKecamatan() {
+    this.isLoading = true;
+    this.error = false;
     this.dataKecamatan = [];
+    this.dataSource = new MatTableDataSource(this.dataKecamatan);
     this.wilayahService
       .getAll(
         'district/?sort=districtName,asc&page=' +
@@ -41,26 +49,53 @@ export class DataKecamatanComponent implements OnInit {
           '&size=' +
           this.pageSize
       )
-      .subscribe((res) => {
-        this.totalRec = res.body.paging.totalrecord;
-        res.body.result.forEach((element: any, index: any) => {
-          this.dataKecamatan.push({
-            no: this.pageIndex * this.pageSize + index + 1 + '.',
-            districtId: element.districtId,
-            districtName: element.districtName,
-            cityId: element.cityId,
-            cityName: element.cityName,
-            provinceId: element.provinceId,
-            provinceName: element.provinceName,
-            countryId: element.countryId,
-            countryNameIdn: element.countryNameIdn,
+      .subscribe(
+        (res) => {
+          this.totalRec = res.body.paging.totalrecord;
+          res.body.result.forEach((element: any, index: any) => {
+            this.dataKecamatan.push({
+              no: this.pageIndex * this.pageSize + index + 1 + '.',
+              districtId: element.districtId,
+              districtName: element.districtName,
+              cityId: element.cityId,
+              cityName: element.cityName,
+              provinceId: element.provinceId,
+              provinceName: element.provinceName,
+              countryId: element.countryId,
+              countryNameIdn: element.countryNameIdn,
+            });
           });
-        });
-        this.dataSource = new MatTableDataSource(this.dataKecamatan);
-      });
+          this.isLoading = false;
+          this.error = false;
+          this.dataSource = new MatTableDataSource(this.dataKecamatan);
+        },
+        (error) => {
+          console.log(error);
+          this.statusText = error.statusText;
+          this.isLoading = false;
+          this.error = true;
+          const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+
+            didOpen: (toast) => {
+              toast.addEventListener('mouseenter', Swal.stopTimer);
+              toast.addEventListener('mouseleave', Swal.resumeTimer);
+            },
+          });
+
+          Toast.fire({
+            icon: 'error',
+            title: 'Service Unavailable',
+          });
+        }
+      );
   }
 
   handlePageEvent(e: PageEvent) {
+    this.isLoading = true;
     this.pageEvent = e;
     this.pageSize = e.pageSize;
     this.pageIndex = e.pageIndex;
@@ -93,9 +128,12 @@ export class DataKecamatanComponent implements OnInit {
               countryNameIdn: element.countryNameIdn,
             });
           });
+          this.isLoading = false;
           this.dataSource = new MatTableDataSource(this.dataKecamatan);
         });
     } else {
+      this.isLoading = false;
+      this.noData = true;
       this.dataSearchKecamatan = [];
       this.wilayahService
         .getAll(
@@ -135,6 +173,7 @@ export class DataKecamatanComponent implements OnInit {
   }
 
   searchKabupaten() {
+    this.noData = true;
     this.pageIndex = 0;
     this.dataSearchKecamatan = [];
     this.wilayahService
