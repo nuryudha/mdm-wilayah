@@ -172,7 +172,6 @@ export class WilayahProvinsiComponent implements OnInit {
             });
           });
           this.isLoading = false;
-
           this.dataSource = new MatTableDataSource(this.dataProvinsi);
           this.ngAfterViewInit();
         });

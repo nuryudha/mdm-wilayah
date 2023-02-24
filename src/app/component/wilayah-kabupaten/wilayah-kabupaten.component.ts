@@ -90,6 +90,8 @@ export class WilayahKabupatenComponent implements OnInit {
   }
 
   handlePageEvent(e: PageEvent) {
+    this.isLoading = true;
+    this.noData = false;
     this.pageEvent = e;
     this.pageSize = e.pageSize;
     this.pageIndex = e.pageIndex;
@@ -118,6 +120,7 @@ export class WilayahKabupatenComponent implements OnInit {
               countryNameIdn: element.countryNameIdn,
             });
           });
+          this.isLoading = false;
           this.dataSource = new MatTableDataSource(this.dataKabupaten);
         });
     } else {
@@ -148,13 +151,16 @@ export class WilayahKabupatenComponent implements OnInit {
               countryNameIdn: element.countryNameIdn,
             });
           });
-          this.noData = true;
+
+          this.isLoading = false;
           this.dataSource = new MatTableDataSource(this.dataSearchKabupaten);
         });
     }
   }
 
   searchKabupaten() {
+    this.isLoading = true;
+    this.noData = true;
     this.pageIndex = 0;
     this.dataSearchKabupaten = [];
     this.wilayahService
@@ -183,6 +189,7 @@ export class WilayahKabupatenComponent implements OnInit {
             countryNameIdn: element.countryNameIdn,
           });
         });
+        this.isLoading = false;
         this.noData = true;
         this.dataSource = new MatTableDataSource(this.dataSearchKabupaten);
       });

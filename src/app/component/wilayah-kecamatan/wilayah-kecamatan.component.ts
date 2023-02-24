@@ -32,12 +32,13 @@ export class WilayahKecamatanComponent implements OnInit {
   dataKecamatan: Kecamatan[] = [];
   dataSource!: MatTableDataSource<Kecamatan>;
   pageEvent!: PageEvent;
-  isLoading = false;
+  isLoading = true;
   error = false;
   statusText: any;
   noData = false;
 
   getKecamatan() {
+    this.noData = false;
     this.isLoading = true;
     this.error = false;
     this.dataKecamatan = [];
@@ -92,6 +93,8 @@ export class WilayahKecamatanComponent implements OnInit {
   }
 
   handlePageEvent(e: PageEvent) {
+    this.isLoading = true;
+    this.noData = false;
     this.pageEvent = e;
     this.pageSize = e.pageSize;
     this.pageIndex = e.pageIndex;
@@ -120,6 +123,7 @@ export class WilayahKecamatanComponent implements OnInit {
               countryNameIdn: element.countryNameIdn,
             });
           });
+          this.isLoading = false;
           this.dataSource = new MatTableDataSource(this.dataKecamatan);
         });
     } else {
@@ -153,12 +157,15 @@ export class WilayahKecamatanComponent implements OnInit {
               countryNameIdn: element.countryNameIdn,
             });
           });
-          this.noData = true;
+
+          this.isLoading = false;
           this.dataSource = new MatTableDataSource(this.dataSearchKecamatan);
         });
     }
   }
   searchKecamatan() {
+    this.isLoading = true;
+    this.noData = true;
     this.pageIndex = 0;
     this.dataSearchKecamatan = [];
     this.wilayahService
@@ -190,6 +197,7 @@ export class WilayahKecamatanComponent implements OnInit {
             countryNameIdn: element.countryNameIdn,
           });
         });
+        this.isLoading = false;
         this.noData = true;
         this.dataSource = new MatTableDataSource(this.dataSearchKecamatan);
       });
