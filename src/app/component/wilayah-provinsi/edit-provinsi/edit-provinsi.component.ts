@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { WilayahService } from '../../wilayah.service';
 import { Negara } from 'src/app/model/negaraModel';
 import { MatTableDataSource } from '@angular/material/table';
-import { Validators, FormBuilder, FormGroup } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import Swal from 'sweetalert2';
 import { Title } from '@angular/platform-browser';

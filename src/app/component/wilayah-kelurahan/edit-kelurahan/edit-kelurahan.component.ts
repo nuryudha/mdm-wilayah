@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { DataKabupaten, Kabupaten } from 'src/app/model/kabupatenModel';
+import { Kabupaten } from 'src/app/model/kabupatenModel';
 import { Negara } from 'src/app/model/negaraModel';
 import { Provinsi } from 'src/app/model/provinsiModel';
 import { WilayahService } from '../../wilayah.service';
@@ -111,7 +111,6 @@ export class EditKelurahanComponent implements OnInit {
       this.selectNamaNegara = res.body.result.countryNameIdn;
     });
   }
-  // http://mff-gateway-dev.apps.ocp4dev.muf.co.id/mdm/wilayah/village/
   saveEditKelurahan() {
     let parameter = {
       cityId: this.selectIdKabupaten,

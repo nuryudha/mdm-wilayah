@@ -1,13 +1,10 @@
-import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { WilayahService } from '../wilayah.service';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
-import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { Negara } from 'src/app/model/negaraModel';
-import { DialogDeleteComponent } from './dialog-delete/dialog-delete.component';
 import { PageEvent } from '@angular/material/paginator';
-import { ActivatedRoute } from '@angular/router';
 import Swal from 'sweetalert2';
 import { Title } from '@angular/platform-browser';
 
@@ -16,7 +13,7 @@ import { Title } from '@angular/platform-browser';
   templateUrl: './wilayah-negara.component.html',
   styleUrls: ['./wilayah-negara.component.css'],
 })
-export class WilayahNegaraComponent implements OnInit, AfterViewInit {
+export class WilayahNegaraComponent implements OnInit {
   displayedColumns: string[] = ['id', 'countryId', 'countryNameIdn', 'action'];
   dataSource!: MatTableDataSource<Negara>;
   dataNegara: Negara[] = [];
@@ -25,19 +22,13 @@ export class WilayahNegaraComponent implements OnInit, AfterViewInit {
   statusText: any;
   noData = false;
 
-  constructor(
-    private wilayahService: WilayahService,
-    private dialog: MatDialog,
-    private route: ActivatedRoute,
-    private title: Title
-  ) {
+  constructor(private wilayahService: WilayahService, private title: Title) {
     this.dataSource = new MatTableDataSource(this.dataNegara);
   }
 
   ngOnInit(): void {
     this.getCountry();
     this.title.setTitle('Negara');
-    // this.getDataCountryAll();
   }
 
   @ViewChild('paginator')
@@ -104,7 +95,6 @@ export class WilayahNegaraComponent implements OnInit, AfterViewInit {
   }
   ngAfterViewInit() {
     this.dataSource.sort = this.sort;
-    // this.dataSource.paginator = this.paginator;
   }
   pageEvent!: PageEvent;
   handlePageEvent(e: PageEvent) {
@@ -145,7 +135,6 @@ export class WilayahNegaraComponent implements OnInit, AfterViewInit {
             this.noData = false;
             this.isLoading = false;
             this.dataSource = new MatTableDataSource(this.dataNegara);
-            // this.ngAfterViewInit();
           });
       } else {
         this.dataSearchNegara = [];
@@ -202,7 +191,6 @@ export class WilayahNegaraComponent implements OnInit, AfterViewInit {
             this.noData = false;
             this.isLoading = false;
             this.dataSource = new MatTableDataSource(this.dataNegara);
-            // this.ngAfterViewInit();
           });
       } else {
         this.dataSearchNegara = [];
@@ -368,30 +356,5 @@ export class WilayahNegaraComponent implements OnInit, AfterViewInit {
           this.ngAfterViewInit();
         });
     }
-  }
-  // DIALOG DELELE
-  openDeleteDialog(dataCountry: any): void {
-    let idCountry = dataCountry.countryId;
-    console.log(idCountry);
-    const dialogConfig = new MatDialogConfig();
-    dialogConfig.autoFocus = false;
-    dialogConfig.disableClose = true;
-    dialogConfig.width = '20%';
-    dialogConfig.height = '20%';
-    dialogConfig.data = {
-      idNegara: idCountry,
-    };
-    this.dialog
-      .open(DialogDeleteComponent, dialogConfig)
-      .afterClosed()
-      .subscribe((res) => {});
-
-    // const dialogRef = this.dialog.open(DialogDeleteComponent);
-
-    // dialogRef.afterClosed().subscribe((result) => {
-    //   if (result) {
-
-    //   }
-    // });
   }
 }

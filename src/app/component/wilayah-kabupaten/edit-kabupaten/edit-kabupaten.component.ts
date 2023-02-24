@@ -4,7 +4,7 @@ import { Negara } from 'src/app/model/negaraModel';
 import { Provinsi } from 'src/app/model/provinsiModel';
 import { WilayahService } from '../../wilayah.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 import Swal from 'sweetalert2';
 import { Title } from '@angular/platform-browser';
 
@@ -17,7 +17,6 @@ export class EditKabupatenComponent implements OnInit {
   constructor(
     private wilayahService: WilayahService,
     private router: Router,
-    private formBuilder: FormBuilder,
     private activatedRoute: ActivatedRoute,
     private title: Title
   ) {}
